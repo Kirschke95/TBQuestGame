@@ -137,6 +137,16 @@ namespace TB_QuestGame
             _gameSurvivor.Race = survivor.Race;
         }
 
+        public static string UppercaseFirst(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+
+            return s.First().ToString().ToUpper() + s.Substring(1);
+        }
+
         #endregion
     }
 }

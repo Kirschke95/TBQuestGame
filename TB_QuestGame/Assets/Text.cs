@@ -84,41 +84,40 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeMissionGetTravelerRace(Survivor gameTraveler)
+        public static string InitializeMissionGetSurvivorAttribute(Survivor gameTraveler)
         {
             string messageBoxText =
-                $"{gameTraveler.Name}, it will be important for us to know your race on this mission.\n" +
+                $"{gameTraveler.Name}, it's important to know what you're good at in a time like this.\n" +
                 " \n" +
-                "Enter your race below.\n" +
-                " \n" +
-                "Please use the universal race classifications below." +
-                " \n";
+                "Jot down your starting attribute.\n";
+                
 
-            string raceList = null;
+            string attributeList = null;
 
-            foreach (Character.RaceType race in Enum.GetValues(typeof(Character.RaceType)))
+            foreach (Survivor.StarterAttribute attribute in Enum.GetValues(typeof(Survivor.StarterAttribute)))
             {
-                if (race != Character.RaceType.None)
+                if (attribute != Survivor.StarterAttribute.None)
                 {
-                    raceList += $"\t{race}\n";
+                    attributeList += $"\t{attribute}\n";
                 }
             }
 
-            messageBoxText += raceList;
+            messageBoxText += attributeList;
 
             return messageBoxText;
         }
 
-        public static string InitializeEchoSurviorInformation(Survivor gameTraveler)
+        public static string InitializeEchoSurviorInformation(Survivor gameSurvivor)
         {
             string messageBoxText =
-                $"Very good then {gameTraveler.Name}.\n" +
+                $"Very good then {gameSurvivor.Name}.\n" +
                 " \n" +
                 "It appears we have all the necessary data to begin your mission. You will find it" +
                 " listed below.\n" +
                 " \n" +
-                $"\tTraveler Name: {gameTraveler.Name}\n" +
-                $"\tTraveler Age: {gameTraveler.Age}\n";               
+                $"\tTraveler Name: {gameSurvivor.Name}\n" +
+                $"\tTraveler Age: {gameSurvivor.Age}\n" +
+                $"\tSurvivor starting attribute: {gameSurvivor.StartingAttribute}\n";
 
             return messageBoxText;
         }

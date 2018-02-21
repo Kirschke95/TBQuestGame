@@ -138,12 +138,12 @@ namespace TB_QuestGame
         /// get a character race value from the user
         /// </summary>
         /// <returns>character race value</returns>
-        public Character.RaceType GetRace()
+        public Survivor.StarterAttribute GetStarterAttribute()
         {
-            Character.RaceType raceType;
-            Enum.TryParse<Character.RaceType>(Console.ReadLine(), out raceType);
+            Survivor.StarterAttribute attibuteChoice;
+            Enum.TryParse<Survivor.StarterAttribute>(Controller.UppercaseFirst(Console.ReadLine()), out attibuteChoice);
 
-            return raceType;
+            return attibuteChoice;
         }
 
         /// <summary>
@@ -375,8 +375,8 @@ namespace TB_QuestGame
             // get survivor's name
             //
             DisplayGamePlayScreen("Mission Initialization - Name", Text.InitializeGetSurvivorName(), ActionMenu.MissionIntro, "");
-            DisplayInputBoxPrompt("Enter your name: ");
-            survivor.Name = GetString();
+            DisplayInputBoxPrompt("Write your name: ");
+            survivor.Name = Controller.UppercaseFirst(GetString());
 
             //
             // get survivor's age
@@ -384,15 +384,15 @@ namespace TB_QuestGame
             DisplayGamePlayScreen("Mission Initialization - Age", Text.InitializeGetSurvivorAge(survivor), ActionMenu.MissionIntro, "");
             int gameTravelerAge;
 
-            GetInteger($"Enter your age {survivor.Name}: ", 0, 1000000, out gameTravelerAge);
+            GetInteger($"Write your age {survivor.Name}: ", 0, 1000000, out gameTravelerAge);
             survivor.Age = gameTravelerAge;
 
             //
             // get survivor's race
             //
-            //DisplayGamePlayScreen("Mission Initialization - Race", Text.InitializeMissionGetTravelerRace(survivor), ActionMenu.MissionIntro, "");
-            //DisplayInputBoxPrompt($"Enter your race {survivor.Name}: ");
-            //survivor.Race = GetRace();
+            DisplayGamePlayScreen("Mission Initialization - Starting Attribute", Text.InitializeMissionGetSurvivorAttribute(survivor), ActionMenu.MissionIntro, "");
+            DisplayInputBoxPrompt($"Choose your starting attribute {survivor.Name}: ");
+            survivor.StartingAttribute = GetStarterAttribute();
 
             //
             // echo the survivor's info
@@ -400,6 +400,7 @@ namespace TB_QuestGame
             DisplayGamePlayScreen("Mission Initialization - Complete", Text.InitializeEchoSurviorInformation(survivor), ActionMenu.MissionIntro, "");
             GetContinueKey();
 
+           
             return survivor;
         }
 

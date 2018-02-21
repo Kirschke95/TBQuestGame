@@ -13,19 +13,36 @@ namespace TB_QuestGame
     {
         #region ENUMERABLES
 
+        public enum StarterAttribute
+        {
+            None,
+            Strength,
+            Charm,
+            Knowledge,
+            Craftsmanship,
+            Sneak
+        }
 
         #endregion
 
         #region FIELDS
 
+        private StarterAttribute _startingAttribute;
+
+        public StarterAttribute StartingAttribute
+        {
+            get { return _startingAttribute; }
+            set { _startingAttribute = value; }
+        }
+
 
         #endregion
-        
+
         #region PROPERTIES
-        
+
 
         #endregion
-        
+
         #region CONSTRUCTORS
 
         public Survivor()
