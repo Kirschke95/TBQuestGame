@@ -28,6 +28,13 @@ namespace TB_QuestGame
         #region FIELDS
 
         private StarterAttribute _startingAttribute;
+        private string _birthState;
+        private bool _canKill; //asking player if they will have the potential to kill to survive
+        private int _kills; //number of kills collected during game
+
+        #endregion
+
+        #region PROPERTIES
 
         public StarterAttribute StartingAttribute
         {
@@ -35,11 +42,23 @@ namespace TB_QuestGame
             set { _startingAttribute = value; }
         }
 
+        public string BirthState
+        {
+            get { return _birthState; }
+            set { _birthState = value; }
+        }
 
-        #endregion
+        public bool CanKill
+        {
+            get { return _canKill; }
+            set { _canKill = value; }
+        }
 
-        #region PROPERTIES
-
+        public int Kills
+        {
+            get { return _kills; }
+            set { _kills = value; }
+        }
 
         #endregion
 
@@ -56,9 +75,13 @@ namespace TB_QuestGame
         }
 
         #endregion
-        
+
         #region METHODS
-        
+
+        public override string Greeting()
+        {
+            return $"Hi, I'm {base.Name}. I mean no harm, I am only trying to survive.";
+        }
 
         #endregion
     }

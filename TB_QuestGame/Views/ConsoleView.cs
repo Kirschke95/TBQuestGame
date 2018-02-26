@@ -368,20 +368,20 @@ namespace TB_QuestGame
             //
             // intro
             //
-            DisplayGamePlayScreen("Mission Initialization", Text.InitializeMissionIntro(), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Journal Entry", Text.InitializeMissionIntro(), ActionMenu.MissionIntro, "");
             GetContinueKey();
 
             //
             // get survivor's name
             //
-            DisplayGamePlayScreen("Mission Initialization - Name", Text.InitializeGetSurvivorName(), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Journal Entry - Name", Text.InitializeGetSurvivorName(), ActionMenu.MissionIntro, "");
             DisplayInputBoxPrompt("Write your name: ");
             survivor.Name = Controller.UppercaseFirst(GetString());
 
             //
             // get survivor's age
             //
-            DisplayGamePlayScreen("Mission Initialization - Age", Text.InitializeGetSurvivorAge(survivor), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Journal Entry - Age", Text.InitializeGetSurvivorAge(survivor), ActionMenu.MissionIntro, "");
             int gameTravelerAge;
 
             GetInteger($"Write your age {survivor.Name}: ", 0, 1000000, out gameTravelerAge);
@@ -390,14 +390,28 @@ namespace TB_QuestGame
             //
             // get survivor's race
             //
-            DisplayGamePlayScreen("Mission Initialization - Starting Attribute", Text.InitializeMissionGetSurvivorAttribute(survivor), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Journal Entry - Starting Attribute", Text.InitializeJournalGetSurvivorAttribute(survivor), ActionMenu.MissionIntro, "");
             DisplayInputBoxPrompt($"Choose your starting attribute {survivor.Name}: ");
             survivor.StartingAttribute = GetStarterAttribute();
 
             //
+            // get survivor's birth state
+            //
+            DisplayGamePlayScreen("Journal Entry - Birth State", Text.InitializeJournalGetSurvivorBirthState(survivor), ActionMenu.MissionIntro, "");
+            DisplayInputBoxPrompt($"Write down your birth state: ");
+            survivor.BirthState = Controller.UppercaseFirst(GetString());
+
+            //
+            // get survivor's potential to kill
+            //
+            DisplayGamePlayScreen("Journal Entry - Potential to Kill", Text.InitializeJournalGetSurvivorCanKill(survivor), ActionMenu.MissionIntro, "");
+            DisplayInputBoxPrompt($"Can you kill to survive?");
+            survivor.CanKill = Controller.GetYesOrNo();
+                      
+            //
             // echo the survivor's info
             //
-            DisplayGamePlayScreen("Mission Initialization - Complete", Text.InitializeEchoSurviorInformation(survivor), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Journal Entry - Complete", Text.InitializeEchoSurviorInformation(survivor), ActionMenu.MissionIntro, "");
             GetContinueKey();
 
            
@@ -408,7 +422,7 @@ namespace TB_QuestGame
 
         public void DisplayTravelerInfo()
         {
-            DisplayGamePlayScreen("Survivor Information", Text.TravelerInfo(_gameTraveler), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Survivor Information", Text.SurvivorInfo(_gameTraveler), ActionMenu.MainMenu, "");
         }
 
         #endregion

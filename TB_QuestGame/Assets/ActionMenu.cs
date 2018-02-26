@@ -49,7 +49,7 @@ namespace TB_QuestGame
         //    MenuChoices = new Dictionary<char, PlayerAction>()
         //            {
         //                PlayerAction.MissionSetup,
-        //                PlayerAction.TravelerInfo,
+        //                PlayerAction.SurvivorInfo,
         //                PlayerAction.Exit
         //            }
         //};

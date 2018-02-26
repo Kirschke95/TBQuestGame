@@ -134,7 +134,9 @@ namespace TB_QuestGame
 
             _gameSurvivor.Name = survivor.Name;
             _gameSurvivor.Age = survivor.Age;
-            _gameSurvivor.Race = survivor.Race;
+            _gameSurvivor.StartingAttribute = survivor.StartingAttribute;
+            _gameSurvivor.BirthState = survivor.BirthState;
+            _gameSurvivor.CanKill = survivor.CanKill;
         }
 
         public static string UppercaseFirst(string s)
@@ -145,6 +147,29 @@ namespace TB_QuestGame
             }
 
             return s.First().ToString().ToUpper() + s.Substring(1);
+        }
+
+        public static bool GetYesOrNo()
+        {
+            string userResponse = Console.ReadLine().ToLower();
+            bool userChoice = false;
+
+            if (userResponse == "yes")
+            {
+                userChoice = true;
+
+            }
+            else if (userResponse == "no")
+            {
+                userChoice = false;
+
+            }
+            else
+            {
+                userChoice = false;
+            }
+
+            return userChoice;
         }
 
         #endregion

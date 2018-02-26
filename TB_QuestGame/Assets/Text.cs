@@ -72,10 +72,10 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeGetSurvivorAge(Survivor gameTraveler)
+        public static string InitializeGetSurvivorAge(Survivor gameSurvivor)
         {
             string messageBoxText =
-                $"Good job {gameTraveler.Name}, I'm surprised you remember. Now we'll get your age.\n" +
+                $"Good job {gameSurvivor.Name}, I'm surprised you remember. Now we'll get your age.\n" +
                 " \n" +
                 "Enter your age below.\n" +
                 " \n" +
@@ -84,10 +84,10 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeMissionGetSurvivorAttribute(Survivor gameTraveler)
+        public static string InitializeJournalGetSurvivorAttribute(Survivor gameSurvivor)
         {
             string messageBoxText =
-                $"{gameTraveler.Name}, it's important to know what you're good at in a time like this.\n" +
+                $"{gameSurvivor.Name}, it's important to know what you're good at in a time like this.\n" +
                 " \n" +
                 "Jot down your starting attribute.\n";
                 
@@ -107,6 +107,24 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        public static string InitializeJournalGetSurvivorBirthState(Survivor gameSurvivor)
+        {
+            string messageBoxText = $"{gameSurvivor.Name}, we need to know where you come from.\n" +
+                "\n" +
+                "Please write the state  you were born in below in your journal.\n";
+
+            return messageBoxText;
+        }
+
+        public static string InitializeJournalGetSurvivorCanKill(Survivor gameSurvivor)
+        {
+            string messageBoxText = $"This is a drastically important piece of info {gameSurvivor.Name}.\n" +
+                "\n" +
+                "Do you have the potential to kill a person if it means surviving?\n";
+
+            return messageBoxText;
+        }
+
         public static string InitializeEchoSurviorInformation(Survivor gameSurvivor)
         {
             string messageBoxText =
@@ -117,7 +135,9 @@ namespace TB_QuestGame
                 " \n" +
                 $"\tTraveler Name: {gameSurvivor.Name}\n" +
                 $"\tTraveler Age: {gameSurvivor.Age}\n" +
-                $"\tSurvivor starting attribute: {gameSurvivor.StartingAttribute}\n";
+                $"\tSurvivor starting attribute: {gameSurvivor.StartingAttribute}\n" +
+                $"\tSurvivor birth state: {gameSurvivor.BirthState}\n" +
+                $"\tSurvivor has potential to KILL: {gameSurvivor.CanKill}";
 
             return messageBoxText;
         }
@@ -128,12 +148,14 @@ namespace TB_QuestGame
 
         #region MAIN MENU ACTION SCREENS
 
-        public static string TravelerInfo(Survivor gameTraveler)
+        public static string SurvivorInfo(Survivor gameSurvivor)
         {
             string messageBoxText =
-                $"\tTraveler Name: {gameTraveler.Name}\n" +
-                $"\tTraveler Age: {gameTraveler.Age}\n" +
-                $"\tTraveler Race: {gameTraveler.Race}\n" +
+                $"\t Survivor Name: {gameSurvivor.Name}\n" +
+                $"\t Survivor Age: {gameSurvivor.Age}\n" +
+                $"\t Survivor Starter Attribute: {gameSurvivor.StartingAttribute}\n" +
+                $"\t Survivor birth state: {gameSurvivor.BirthState}\n" +
+                $"\t Survivor has potential to KILL: {gameSurvivor.CanKill}" +
                 " \n";
 
             return messageBoxText;
@@ -142,7 +164,7 @@ namespace TB_QuestGame
         //public static string Travel(int currentSpaceTimeLocationId, List<SpaceTimeLocation> spaceTimeLocations)
         //{
         //    string messageBoxText =
-        //        $"{gameTraveler.Name}, Aion Base will need to know the name of the new location.\n" +
+        //        $"{gameSurvivor.Name}, Aion Base will need to know the name of the new location.\n" +
         //        " \n" +
         //        "Enter the ID number of your desired location from the table below.\n" +
         //        " \n";
