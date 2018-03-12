@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Assets\ActionMenu.cs" />
     <Compile Include="Assets\Text.cs" />
+    <Compile Include="Assets\WorldObjects.cs" />
     <Compile Include="ConsoleUtilities\ConsoleLayout.cs" />
     <Compile Include="ConsoleUtilities\ConsoleTheme.cs" />
     <Compile Include="ConsoleUtilities\ConsoleWindowControl.cs" />
@@ -54,6 +55,8 @@
     <Compile Include="Models\Menu.cs" />
     <Compile Include="Models\Survivor.cs" />
     <Compile Include="Models\SurvivorAction.cs" />
+    <Compile Include="Models\WorldContents.cs" />
+    <Compile Include="Models\WorldLocations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\ConsoleView.cs" />

@@ -11,13 +11,25 @@ namespace TB_QuestGame
     /// </summary>
     public class ConsoleView
     {
+        #region ENUMS
+
+        public enum ViewStatus
+        {
+            TravelerInitialization,
+            PlayingGame
+            
+        }
+
+        #endregion
         #region FIELDS
 
         //
         // declare game objects for the ConsoleView object to use
         //
-        Survivor _gameTraveler;
+        Survivor _gameSurvivor;
+        WorldContents _worldContents;
 
+        ViewStatus _viewStatus = ViewStatus.PlayingGame;
         #endregion
 
         #region PROPERTIES
@@ -29,9 +41,12 @@ namespace TB_QuestGame
         /// <summary>
         /// default constructor to create the console view objects
         /// </summary>
-        public ConsoleView(Survivor gameTraveler)
+        public ConsoleView(Survivor gameSurvivor, WorldContents worldContents)
         {
-            _gameTraveler = gameTraveler;
+            _gameSurvivor = gameSurvivor;
+            _worldContents = worldContents;
+
+            _viewStatus = ViewStatus.PlayingGame;
 
             InitializeDisplay();
         }
@@ -80,19 +95,143 @@ namespace TB_QuestGame
             SurvivorAction choosenAction = SurvivorAction.None;
 
             //
-            // TODO validate menu choices
+            //create array of valid menu choices
             //
-            ConsoleKeyInfo keyPressedInfo = Console.ReadKey();
-            char keyPressed = keyPressedInfo.KeyChar;
+            char[] validKeys = menu.MenuChoices.Keys.ToArray();
+
+            //
+            //validate key pressed against menuchoices dictionary
+            //
+            char keyPressed;
+            do
+            {
+                ConsoleKeyInfo keyPressedInfo = Console.ReadKey(true);
+                keyPressed = keyPressedInfo.KeyChar;
+            } while (!validKeys.Contains(keyPressed));
+
+
             choosenAction = menu.MenuChoices[keyPressed];
+            Console.CursorVisible = true;
 
             return choosenAction;
         }
 
-        /// <summary>
-        /// get a string value from the user
-        /// </summary>
-        /// <returns>string value</returns>
+        public void DisplayListOfLocations()
+        {
+            DisplayGamePlayScreen("All locations", Text.ListWorldLocations(_worldContents.WorldLocations),
+                ActionMenu.MainMenu, "");
+        }
+
+        public int GetNextTravelLocation()
+        {
+            int locationId = 0;
+            bool validLocationId = false;
+
+            return locationId;
+        }
+
+        public void DisplayLocationsVisisted()
+        {
+            //create a list of locations that survivor has been to
+            List<WorldLocations> visitedLocations = new List<WorldLocations>();
+            foreach (int locationId in _gameSurvivor.LocationsVisited)
+            {
+                visitedLocations.Add(_worldContents.GetLocationById(locationId));
+            }
+
+            DisplayGamePlayScreen("Locations you've been too", Text.VisitedLocations(visitedLocations), ActionMenu.MainMenu, "");
+        }
+
+        public void DisplayLookAround()
+        {
+            WorldLocations currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
+            DisplayGamePlayScreen("Current Location", Text.LookAround(currentLocation), ActionMenu.MainMenu, "");
+        }
+
+        public int GetNextLocation()
+        {
+            int locationId = 0;
+            bool validLocation = false;
+
+            DisplayGamePlayScreen("Move to a new location", Text.Travel(_gameSurvivor, _worldContents.WorldLocations),
+                ActionMenu.MainMenu, "");
+
+            while (!validLocation)
+            {
+                //get integer from user
+                GetInteger($"Enter where you want to move {_gameSurvivor.Name}: ", 1,
+                    _worldContents.GetMaxLocationId(), out locationId);
+
+
+                //validate integer as valid location id, then by locked or not
+                if (_worldContents.IsValidLocation(locationId))
+                {
+                    if (_worldContents.IsLockedLocation(locationId))
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It seems this room is locked. Pick a new location.");
+                    }
+                    else if (_worldContents.GetLocationById(locationId).RequiredExp > _gameSurvivor.Exp)
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("You do not have the required experience to travel here.");
+                    }
+                    else
+                    {
+                        validLocation = true;
+                    }
+                    
+
+                }
+                else
+                {
+                    DisplayInputErrorMessage("It seems you're trying to go somewhere that doesn't exist. Try again.");
+                }
+
+            }
+
+            return locationId;
+        }
+
+        public void DisplayStatusBox()
+        {
+            Console.BackgroundColor = ConsoleTheme.InputBoxBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.InputBoxBorderColor;
+
+            //
+            // display the outline for the status box
+            //
+            ConsoleWindowHelper.DisplayBoxOutline(
+                ConsoleLayout.StatusBoxPositionTop,
+                ConsoleLayout.StatusBoxPositionLeft,
+                ConsoleLayout.StatusBoxWidth,
+                ConsoleLayout.StatusBoxHeight);
+                               
+                //
+                // display status box header with title
+                //
+                Console.BackgroundColor = ConsoleTheme.StatusBoxBorderColor;
+                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+                Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 2, ConsoleLayout.StatusBoxPositionTop + 1);
+                Console.Write(ConsoleWindowHelper.Center("Game Stats", ConsoleLayout.StatusBoxWidth - 4));
+                Console.BackgroundColor = ConsoleTheme.StatusBoxBackgroundColor;
+                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+
+                //
+                // display stats
+                //
+                int startingRow = ConsoleLayout.StatusBoxPositionTop + 3;
+                int row = startingRow;
+                foreach (string statusTextLine in Text.StatusBox(_gameSurvivor, _worldContents))
+                {
+                    Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 3, row);
+                    Console.Write(statusTextLine);
+                    row++;
+                }
+            
+            
+        }
+
         public string GetString()
         {
             return Console.ReadLine();
@@ -201,7 +340,7 @@ namespace TB_QuestGame
             ConsoleWindowControl.DisableResize();
             ConsoleWindowControl.DisableMaximize();
             ConsoleWindowControl.DisableMinimize();
-            Console.Title = "The Aion Project";
+            Console.Title = "The Survivor";
 
             //
             // set the default console window values
@@ -407,23 +546,31 @@ namespace TB_QuestGame
             DisplayGamePlayScreen("Journal Entry - Potential to Kill", Text.InitializeJournalGetSurvivorCanKill(survivor), ActionMenu.MissionIntro, "");
             DisplayInputBoxPrompt($"Can you kill to survive?");
             survivor.CanKill = Controller.GetYesOrNo();
-                      
+
             //
             // echo the survivor's info
             //
             DisplayGamePlayScreen("Journal Entry - Complete", Text.InitializeEchoSurviorInformation(survivor), ActionMenu.MissionIntro, "");
             GetContinueKey();
 
-           
+
             return survivor;
         }
 
         #region ----- display responses to menu action choices -----
 
-        public void DisplayTravelerInfo()
+        public void DisplaySurvivorInfo()
         {
-            DisplayGamePlayScreen("Survivor Information", Text.SurvivorInfo(_gameTraveler), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Survivor Information", Text.SurvivorInfo(_gameSurvivor), ActionMenu.MainMenu, "");
+
         }
+
+        
+
+        //public void DisplayUpdateSurvivorInfo()
+        //{
+        //    DisplayGamePlayScreen("Edit Your Info", Text.EditInfo(_gameSurvivor), ActionMenu.MainMenu, "");
+        //}
 
         #endregion
 

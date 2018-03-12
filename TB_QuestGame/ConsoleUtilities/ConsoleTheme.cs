@@ -26,13 +26,13 @@ namespace TB_QuestGame
         //
         // console window header colors
         //
-        public static ConsoleColor HeaderBackgroundColor = ConsoleColor.DarkRed;
+        public static ConsoleColor HeaderBackgroundColor = ConsoleColor.Red;
         public static ConsoleColor HeaderForegroundColor = ConsoleColor.Gray;
 
         //
         // console window footer colors
         //
-        public static ConsoleColor FooterBackgroundColor = ConsoleColor.DarkRed;
+        public static ConsoleColor FooterBackgroundColor = ConsoleColor.Red;
         public static ConsoleColor FooterForegroundColor = ConsoleColor.Gray;
 
         //
@@ -60,5 +60,14 @@ namespace TB_QuestGame
         public static ConsoleColor InputBoxBorderColor = ConsoleColor.DarkRed;
         public static ConsoleColor InputBoxHeaderBackgroundColor = ConsoleColor.Black;
         public static ConsoleColor InputBoxHeaderForegroundColor = ConsoleColor.Gray;
+
+        //
+        //status box colors
+        //
+        public static ConsoleColor StatusBoxBackgroundColor = ConsoleColor.Black;
+        public static ConsoleColor StatusBoxForegroundColor = ConsoleColor.Gray;
+        public static ConsoleColor StatusBoxBorderColor = ConsoleColor.DarkRed;
+        public static ConsoleColor StatusBoxHeaderBackgroundColor = ConsoleColor.Black;
+        public static ConsoleColor StatusBoxHeaderForegroundColor = ConsoleColor.Gray;
     }
 }

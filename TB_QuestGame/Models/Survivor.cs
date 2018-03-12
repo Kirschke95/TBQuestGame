@@ -31,7 +31,11 @@ namespace TB_QuestGame
         private string _birthState;
         private bool _canKill; //asking player if they will have the potential to kill to survive
         private int _kills; //number of kills collected during game
-
+        private List<int> _locationsVisited;
+        private int _locationId;
+        private int _exp;
+        private int _health;
+      
         #endregion
 
         #region PROPERTIES
@@ -60,18 +64,41 @@ namespace TB_QuestGame
             set { _kills = value; }
         }
 
+        public List<int> LocationsVisited
+        {
+            get { return _locationsVisited; }
+            set { _locationsVisited = value; }
+        }
+
+        public int LocationId
+        {
+            get { return _locationId; }
+            set { _locationId = value; }
+        }
+        public int Exp
+        {
+            get { return _exp; }
+            set { _exp = value; }
+        }
+        public int Health
+        {
+            get { return _health; }
+            set { _health = value; }
+        }
+
+
         #endregion
 
         #region CONSTRUCTORS
 
         public Survivor()
         {
-
+            _locationsVisited = new List<int>();
         }
 
         public Survivor(string name, RaceType race) : base(name, race)
         {
-
+            _locationsVisited = new List<int>();
         }
 
         #endregion
@@ -81,6 +108,30 @@ namespace TB_QuestGame
         public override string Greeting()
         {
             return $"Hi, I'm {base.Name}. I mean no harm, I am only trying to survive.";
+        }
+
+        public bool HasVisisted(int _locationId)
+        {
+            if (LocationsVisited.Contains(_locationId))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool HasEnoughExp(int expReq)
+        {           
+            if (Exp >= expReq)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }           
         }
 
         #endregion

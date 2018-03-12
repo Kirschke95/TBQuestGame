@@ -20,10 +20,12 @@ namespace TB_QuestGame
         PutDownItem,
         PutDownTreasure,
         Travel,
+        SurvivorLocationsVisited,
         SurvivorInfo,
+        SurvivorEdit,
         SurvivorInventory,
         SurvivorTreasure,
-        ListDestinations,
+        ListLocations,
         ListItems,
         ListTreasures,
         Exit

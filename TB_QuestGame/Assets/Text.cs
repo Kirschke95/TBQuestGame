@@ -38,10 +38,9 @@ namespace TB_QuestGame
         public static string CurrrentLocationInfo()
         {
             string messageBoxText =
-            "You are now in the Norlon Corporation research facility located in " +
-            "the city of Heraklion on the north coast of Crete. You have passed through " +
-            "heavy security and descended an unknown number of levels to the top secret " +
-            "research lab for the Aion Project.\n" +
+            "You are now in a dark room. What's outside is unknown. " +
+            "The air is dry and smells awful. You can't really see much. " +
+            "You should look around, and see if you can feel anything in the room. " +
             " \n" +
             "\tChoose from the menu options to proceed.\n";
 
@@ -90,7 +89,7 @@ namespace TB_QuestGame
                 $"{gameSurvivor.Name}, it's important to know what you're good at in a time like this.\n" +
                 " \n" +
                 "Jot down your starting attribute.\n";
-                
+
 
             string attributeList = null;
 
@@ -133,8 +132,8 @@ namespace TB_QuestGame
                 "It appears we have all the necessary data to begin your mission. You will find it" +
                 " listed below.\n" +
                 " \n" +
-                $"\tTraveler Name: {gameSurvivor.Name}\n" +
-                $"\tTraveler Age: {gameSurvivor.Age}\n" +
+                $"\tSurvivor Name: {gameSurvivor.Name}\n" +
+                $"\tSurvivor Age: {gameSurvivor.Age}\n" +
                 $"\tSurvivor starting attribute: {gameSurvivor.StartingAttribute}\n" +
                 $"\tSurvivor birth state: {gameSurvivor.BirthState}\n" +
                 $"\tSurvivor has potential to KILL: {gameSurvivor.CanKill}";
@@ -148,6 +147,30 @@ namespace TB_QuestGame
 
         #region MAIN MENU ACTION SCREENS
 
+        public static string ListWorldLocations(IEnumerable<WorldLocations> worldLocations)
+        {
+            string messageboxText =
+                "All World Locations\n" +
+                "\n" +
+
+                //display a table header
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            //display all world locations
+            string worldLocationsList = null;
+            foreach (WorldLocations worldLocation in worldLocations)
+            {
+                worldLocationsList +=
+                    $"{worldLocation.LocationID}".PadRight(10) +
+                    $"{worldLocation.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageboxText += worldLocationsList;
+
+            return messageboxText;
+        }
         public static string SurvivorInfo(Survivor gameSurvivor)
         {
             string messageBoxText =
@@ -156,35 +179,101 @@ namespace TB_QuestGame
                 $"\t Survivor Starter Attribute: {gameSurvivor.StartingAttribute}\n" +
                 $"\t Survivor birth state: {gameSurvivor.BirthState}\n" +
                 $"\t Survivor has potential to KILL: {gameSurvivor.CanKill}" +
-                " \n";
+                $"\n\n\t {gameSurvivor.Greeting()}" +
+                " \n\n\n";
+
+            //gameSurvivor.Greeting();
 
             return messageBoxText;
         }
 
-        //public static string Travel(int currentSpaceTimeLocationId, List<SpaceTimeLocation> spaceTimeLocations)
+        //public static string EditInfo(Survivor gameSurvivor)
         //{
-        //    string messageBoxText =
-        //        $"{gameSurvivor.Name}, Aion Base will need to know the name of the new location.\n" +
-        //        " \n" +
-        //        "Enter the ID number of your desired location from the table below.\n" +
-        //        " \n";
-
-
-        //    string spaceTimeLocationList = null;
-
-        //    foreach (SpaceTimeLocation spaceTimeLocation in spaceTimeLocations)
+        //    if (gameSurvivor.HasEnoughExp(100))
         //    {
-        //        if (race != Character.RaceType.None)
-        //        {
-        //            raceList += $"\t{race}\n";
-        //        }
+        //        string messageBoxText = "You have enough experience to change your starting attribute"
         //    }
-
-        //    messageBoxText += raceList;
-
-        //    return messageBoxText;
         //}
 
-        #endregion
+        public static string LookAround(WorldLocations worldLocation)
+        {
+            string messageBox = $"You are currently in {worldLocation.Name}\n" +
+                $"\n";
+            //add room contents later when we get into world objects 
+            return messageBox;
+        }
+
+        public static string Travel(Survivor gameSurvivor, List<WorldLocations> worldLocations)
+        {
+            string messageBoxText =
+                $"{gameSurvivor.Name}, you need to make a move if you want to make it out of here.\n" +
+                " \n" +
+                "Pick your next location to move too, and make your choice carefully.\n" +
+                "\n" +
+
+                //display list of the locations to travel to
+                "ID".PadRight(10) + "Location".PadRight(30) + "Locked".PadRight(10) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "-----".PadRight(10) + "\n";
+
+            string locationList = null;
+            foreach (WorldLocations location in worldLocations)
+            {
+                locationList +=
+                    $"{location.LocationID}".PadRight(10) +
+                    $"{location.Name}".PadRight(30) +
+                    $"{location.Locked}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += locationList;
+
+            return messageBoxText;
+        }
+
+        public static string CurrentLocationInfo(WorldLocations worldLocation)
+        {
+            string messageBoxText =
+                $"You are currently in {worldLocation.Name}\n" +
+                "\n" + worldLocation.Description;
+
+            return messageBoxText;
+        }
+
+        public static string VisitedLocations(IEnumerable<WorldLocations> worldLocations)
+        {
+            string messageboxText =
+                "Locations Visisted\n" +
+                "\n" +
+
+                //display a table header
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            //display all world locations
+            string worldLocationsList = null;
+            foreach (WorldLocations worldLocation in worldLocations)
+            {
+                worldLocationsList +=
+                    $"{worldLocation.LocationID}".PadRight(10) +
+                    $"{worldLocation.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageboxText += worldLocationsList;
+
+            return messageboxText;
+        }
+        public static List<string> StatusBox(Survivor survivor, WorldContents _worldContents)
+        {
+            List<string> statusBoxText = new List<string>();
+
+            statusBoxText.Add($"Experience Points: {survivor.Exp}\n");
+            statusBoxText.Add($"Health: {survivor.Health}\n");
+
+            return statusBoxText;
+
+
+            #endregion
+        }
     }
 }

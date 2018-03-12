@@ -15,7 +15,10 @@ namespace TB_QuestGame
 
         private ConsoleView _gameConsoleView;
         private Survivor _gameSurvivor;
+        private WorldContents _worldContents;
         private bool _playingGame;
+        private WorldLocations _currentLocation;
+
 
         #endregion
 
@@ -49,7 +52,8 @@ namespace TB_QuestGame
         private void InitializeGame()
         {
             _gameSurvivor = new Survivor();
-            _gameConsoleView = new ConsoleView(_gameSurvivor);
+            _worldContents = new WorldContents();
+            _gameConsoleView = new ConsoleView(_gameSurvivor, _worldContents);
             _playingGame = true;
 
             Console.CursorVisible = false;
@@ -90,12 +94,15 @@ namespace TB_QuestGame
             // prepare game play screen
             //
             _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrrentLocationInfo(), ActionMenu.MainMenu, "");
+            _currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
+            _gameConsoleView.DisplayStatusBox();
 
             //
             // game loop
             //
             while (_playingGame)
             {
+                UpdateGameStatus();
                 travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
 
                 //
@@ -107,12 +114,45 @@ namespace TB_QuestGame
                         break;
 
                     case SurvivorAction.SurvivorInfo:
-                        _gameConsoleView.DisplayTravelerInfo();
+                        _gameConsoleView.DisplaySurvivorInfo();
+                        _gameConsoleView.DisplayStatusBox();
+                        break;
+
+                    case SurvivorAction.SurvivorEdit:
+
+                        break;
+
+                    case SurvivorAction.ListLocations:
+                        _gameConsoleView.DisplayListOfLocations();
+                        _gameConsoleView.DisplayStatusBox();
+                        break;
+
+                    case SurvivorAction.LookAround:
+                        _gameConsoleView.DisplayLookAround();
+                        _gameConsoleView.DisplayStatusBox();
+                        break;
+
+                    case SurvivorAction.Travel:
+                        //get new location choice and update current location
+
+                        _gameSurvivor.LocationId = _gameConsoleView.GetNextLocation();
+                        _currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
+                        _gameConsoleView.DisplayStatusBox();
+                        //set gameplayscreen as current location info
+                        _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(_currentLocation),
+                            ActionMenu.MainMenu, "");
+                        break;
+
+                    case SurvivorAction.SurvivorLocationsVisited:
+                        _gameConsoleView.DisplayLocationsVisisted();
+                        _gameConsoleView.DisplayStatusBox();
                         break;
 
                     case SurvivorAction.Exit:
                         _playingGame = false;
                         break;
+
+
 
                     default:
                         break;
@@ -125,6 +165,20 @@ namespace TB_QuestGame
             Environment.Exit(1);
         }
 
+        private void UpdateGameStatus()
+        {
+            if (!_gameSurvivor.HasVisisted(_currentLocation.LocationID))
+            {
+                _gameSurvivor.LocationsVisited.Add(_currentLocation.LocationID);
+                _gameSurvivor.Exp += _currentLocation.ExperiencePoints;
+            }
+
+            if (_currentLocation.RoomWidth > 0)
+            {
+
+            }
+        }
+
         /// <summary>
         /// initialize the player info
         /// </summary>
@@ -132,11 +186,16 @@ namespace TB_QuestGame
         {
             Survivor survivor = _gameConsoleView.GetInitialSurviorInformation();
 
+
             _gameSurvivor.Name = survivor.Name;
             _gameSurvivor.Age = survivor.Age;
             _gameSurvivor.StartingAttribute = survivor.StartingAttribute;
             _gameSurvivor.BirthState = survivor.BirthState;
             _gameSurvivor.CanKill = survivor.CanKill;
+            _gameSurvivor.LocationId = 1;
+
+            _gameSurvivor.Exp = 0;
+            _gameSurvivor.Health = 100;
         }
 
         public static string UppercaseFirst(string s)

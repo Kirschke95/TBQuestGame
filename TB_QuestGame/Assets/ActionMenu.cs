@@ -38,7 +38,12 @@ namespace TB_QuestGame
             MenuChoices = new Dictionary<char, SurvivorAction>()
                 {
                     { '1', SurvivorAction.SurvivorInfo },
-                    { '2', SurvivorAction.Exit }
+                    { '2', SurvivorAction.SurvivorEdit },
+                    { '3', SurvivorAction.LookAround },
+                    { '4', SurvivorAction.ListLocations },
+                    { '5', SurvivorAction.Travel},
+                    { '6', SurvivorAction.SurvivorLocationsVisited },
+                    { '0', SurvivorAction.Exit }
                 }
         };
 
