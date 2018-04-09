@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TB_QuestGame
 {
-    public static class WorldObjects
+    public static partial class WorldObjects
     {
         //
         //list of locations with their declared fields and properties
@@ -70,19 +70,19 @@ namespace TB_QuestGame
             {
                 Name = "The Kitchen",
                 LocationID = 5,
-                Description = "This room is on fire. It's going to hurt moving through it, but it just might be worth it." +
-                "You gain health by eating here, but at a cost.",
+                Description = "This room looks like a kitchen. It hasn't been used in a long time. You can barely makeout the layout " +
+                "of the room, but it looks like there may be some food in here.",
                 Locked = false,
-                ExperiencePoints = -20,
-                HealthAffect = 20
+                ExperiencePoints = 10,
+                HealthAffect = 0
             },
 
             new WorldLocations
             {
                 Name = "The Bathroom",
                 LocationID = 6,
-                Description = "It smells fowl, and you feel dumber for walking in. Nothing to gain here, " +
-                "but you have made negative progress.",
+                Description = "It smells fowl, and you feel dumber for walking in. Nothing to gain here without being able to see, " +
+                "but you have made negative progress. Come back with a way to see, and maybe you'll be rewarded.",
                 Locked = false,
                 ExperiencePoints = -20,
                 HealthAffect = -50

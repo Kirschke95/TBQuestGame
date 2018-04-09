@@ -35,7 +35,8 @@ namespace TB_QuestGame
         private int _locationId;
         private int _exp;
         private int _health;
-      
+        private List<SurvivorObject> _inventory;
+
         #endregion
 
         #region PROPERTIES
@@ -70,11 +71,32 @@ namespace TB_QuestGame
             set { _locationsVisited = value; }
         }
 
-        public int LocationId
+        //public int LocationId
+        //{
+        //    get { return _locationId; }
+        //    set { _locationId = value; }
+        //}
+        public override int LocationId
         {
-            get { return _locationId; }
-            set { _locationId = value; }
+            get
+            {
+                return _locationId;
+            }
+            set
+            {
+                _locationId = value;
+                if (value == 0)
+                {
+                    OnObjectAddedToInventory();
+                }
+            }
         }
+
+        private void OnObjectAddedToInventory()
+        {
+            throw new NotImplementedException();
+        }
+
         public int Exp
         {
             get { return _exp; }
@@ -86,6 +108,11 @@ namespace TB_QuestGame
             set { _health = value; }
         }
 
+        public List<SurvivorObject> Inventory
+        {
+            get { return _inventory; }
+            set { _inventory = value; }
+        }
 
         #endregion
 
@@ -94,11 +121,13 @@ namespace TB_QuestGame
         public Survivor()
         {
             _locationsVisited = new List<int>();
+            _inventory = new List<SurvivorObject>();
         }
 
         public Survivor(string name, RaceType race) : base(name, race)
         {
             _locationsVisited = new List<int>();
+            _inventory = new List<SurvivorObject>();
         }
 
         #endregion
@@ -123,7 +152,7 @@ namespace TB_QuestGame
         }
 
         public bool HasEnoughExp(int expReq)
-        {           
+        {
             if (Exp >= expReq)
             {
                 return true;
@@ -131,7 +160,7 @@ namespace TB_QuestGame
             else
             {
                 return false;
-            }           
+            }
         }
 
         #endregion

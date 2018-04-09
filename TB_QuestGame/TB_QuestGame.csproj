@@ -45,16 +45,21 @@
   <ItemGroup>
     <Compile Include="Assets\ActionMenu.cs" />
     <Compile Include="Assets\Text.cs" />
-    <Compile Include="Assets\WorldObjects.cs" />
+    <Compile Include="Assets\WorldObjectsGameObjects.cs" />
+    <Compile Include="Assets\WorldObjectsWorldLocations.cs" />
     <Compile Include="ConsoleUtilities\ConsoleLayout.cs" />
     <Compile Include="ConsoleUtilities\ConsoleTheme.cs" />
     <Compile Include="ConsoleUtilities\ConsoleWindowControl.cs" />
     <Compile Include="ConsoleUtilities\ConsoleWindowHelper.cs" />
     <Compile Include="Controllers\Controller.cs" />
     <Compile Include="Models\Character.cs" />
+    <Compile Include="Models\Enums\SurvivorObjectType.cs" />
+    <Compile Include="Models\GameObject.cs" />
     <Compile Include="Models\Menu.cs" />
+    <Compile Include="Models\SellableObject.cs" />
     <Compile Include="Models\Survivor.cs" />
     <Compile Include="Models\SurvivorAction.cs" />
+    <Compile Include="Models\SurvivorObject.cs" />
     <Compile Include="Models\WorldContents.cs" />
     <Compile Include="Models\WorldLocations.cs" />
     <Compile Include="Program.cs" />

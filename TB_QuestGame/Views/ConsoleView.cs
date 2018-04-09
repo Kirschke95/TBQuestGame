@@ -119,7 +119,18 @@ namespace TB_QuestGame
         public void DisplayListOfLocations()
         {
             DisplayGamePlayScreen("All locations", Text.ListWorldLocations(_worldContents.WorldLocations),
-                ActionMenu.MainMenu, "");
+                ActionMenu.AdminMenu, "");
+        }
+
+        public void DisplayListOfGameObjects()
+        {
+            DisplayGamePlayScreen("All Game Objects", Text.ListAllGameObjects(_worldContents.GameObjects),
+                ActionMenu.AdminMenu, "");
+        }
+
+        public void DisplayInventory()
+        {
+            DisplayGamePlayScreen("Inventory", Text.CurrentInventory(_gameSurvivor.Inventory), ActionMenu.MainMenu, "");
         }
 
         public int GetNextTravelLocation()
@@ -146,6 +157,148 @@ namespace TB_QuestGame
         {
             WorldLocations currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
             DisplayGamePlayScreen("Current Location", Text.LookAround(currentLocation), ActionMenu.MainMenu, "");
+        }
+
+        public int DisplayGetGameObjectToLookAt()
+        {
+            int gameObjectId = 0;
+            bool validGameObject = false;
+
+            //list of game objects in current location
+            List<GameObject> currentLocationObjects = _worldContents.GetGameObjectsByLocationId(_gameSurvivor.LocationId);
+
+            if (currentLocationObjects.Count > 0)
+            {
+                DisplayGamePlayScreen("Look at an item", Text.GameObjectsChooseList(currentLocationObjects), ActionMenu.MainMenu, "");
+
+                while (!validGameObject)
+                {
+                    //get integer from user
+                    GetInteger($"Enter the Id number of the object you want to look at: ", 0, 0, out gameObjectId);
+
+                    if (_worldContents.IsValidGameObjectByLocationId(gameObjectId, _gameSurvivor.LocationId))
+                    {
+                        validGameObject = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered in invalid game object Id. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Look at an item", "This room has no items.", ActionMenu.MainMenu, "");
+            }
+
+            return gameObjectId;
+        }
+
+        public int DisplayGetSurvivorObjectToPickUp()
+        {
+            int gameObjectId = 0;
+            bool validGameObjectId = false;
+
+            //get list of survivor objects in current location
+            List<SurvivorObject> survivorObjectsInCurrentLocation = _worldContents.GetSurvivorObjectsByLocationId(_gameSurvivor.LocationId);
+
+            if (survivorObjectsInCurrentLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Pick up item", Text.GameObjectsChooseList(survivorObjectsInCurrentLocation), ActionMenu.MainMenu, "");
+
+                while (!validGameObjectId)
+                {
+                    //get int from user
+                    GetInteger($"Enter the Id number of the item you want to pick up:", 0, 0, out gameObjectId);
+
+                    //validate integer as valid object id AND in current location
+                    if (_worldContents.IsValidGameObjectByLocationId(gameObjectId, _gameSurvivor.LocationId))
+                    {
+                        SurvivorObject survivorObject = _worldContents.GetGameOjbectById(gameObjectId) as SurvivorObject;
+                        if (survivorObject.CanInventory)
+                        {
+                            validGameObjectId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("You cannot pick that item up. Try again.");
+                        }
+                    }
+                    else
+                    {
+                        DisplayInputErrorMessage("You entered an invalid item Id, try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick up item", "There are no items here.", ActionMenu.MainMenu, "");
+            }
+
+            return gameObjectId;
+        }
+
+        public int DisplayGetInventoryObjectToPutDown()
+        {
+            int survivorObjectId = 0;
+            bool validInventoryObject = false;
+
+            if (_gameSurvivor.Inventory.Count > 0)
+            {
+                DisplayGamePlayScreen("Put Down Item", Text.GameObjectsChooseList(_gameSurvivor.Inventory), ActionMenu.MainMenu, "");
+
+                while (!validInventoryObject)
+                {
+                    //get integer from user
+                    GetInteger($"Enter the Id number of the item you want to put down: ", 0, 0, out survivorObjectId);
+
+                    //find object in inventory
+                    //note: LINQ used, but foreach loop may also be used
+                    SurvivorObject objectToPutDown = _gameSurvivor.Inventory.FirstOrDefault(o => o.Id == survivorObjectId);
+
+                    //validate object is in inventory
+                    if (objectToPutDown != null)
+                    {
+                        validInventoryObject = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an Id that is not in your inventory. Try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Put Down Item", "You have nothing in your inventory.", ActionMenu.MainMenu, "");
+            }
+
+            return survivorObjectId;
+        }
+
+        public void DisplayConfirmSurvivorObjectRemovedFromInventory(SurvivorObject objectToPutDown)
+        {
+            DisplayGamePlayScreen("Put Down Item", $"The {objectToPutDown.Name} has been removed.", ActionMenu.MainMenu, "");
+        }
+
+        public void DisplayConfirmSurvivorObjectAddedToInventory(SurvivorObject objectAddedToInventory)
+        {
+            if (objectAddedToInventory.PickUpMessage != null)
+            {
+                DisplayGamePlayScreen("Pick up game item", objectAddedToInventory.PickUpMessage, ActionMenu.MainMenu, "");
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick up game item", $"The {objectAddedToInventory.Name} has been added to your inventory", ActionMenu.MainMenu, "");
+            }
+            
+        }
+
+        public void DisplayGameObjectInfo(GameObject gameObject)
+        {
+            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.MainMenu, "");
         }
 
         public int GetNextLocation()
@@ -246,22 +399,33 @@ namespace TB_QuestGame
             bool validResponse = false;
             integerChoice = 0;
 
+            //validate on range if ither minmumvalue or max are not 0
+            bool validateRange = (minimumValue != 0 || maximumValue != 0);
+
             DisplayInputBoxPrompt(prompt);
             while (!validResponse)
             {
                 if (int.TryParse(Console.ReadLine(), out integerChoice))
                 {
-                    if (integerChoice >= minimumValue && integerChoice <= maximumValue)
+                    if (validateRange)
                     {
-                        validResponse = true;
+                        if (integerChoice >= minimumValue && integerChoice <= maximumValue)
+                        {
+                            validResponse = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
+                            DisplayInputBoxPrompt(prompt);
+                        }
                     }
                     else
                     {
-                        ClearInputBox();
-                        DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
-                        DisplayInputBoxPrompt(prompt);
+                        validResponse = true;
                     }
                 }
+                    
                 else
                 {
                     ClearInputBox();

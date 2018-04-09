@@ -11,6 +11,17 @@ namespace TB_QuestGame
     /// </summary>
     public static class ActionMenu
     {
+
+        public enum CurrentMenu
+        {
+            MissionIntro,
+            InitalizeMission,
+            MainMenu,
+            AdminMenu
+        }
+
+        public static CurrentMenu currentMenu = CurrentMenu.MainMenu;
+
         public static Menu MissionIntro = new Menu()
         {
             MenuName = "MissionIntro",
@@ -38,13 +49,29 @@ namespace TB_QuestGame
             MenuChoices = new Dictionary<char, SurvivorAction>()
                 {
                     { '1', SurvivorAction.SurvivorInfo },
-                    { '2', SurvivorAction.SurvivorEdit },
-                    { '3', SurvivorAction.LookAround },
-                    { '4', SurvivorAction.ListLocations },
-                    { '5', SurvivorAction.Travel},
-                    { '6', SurvivorAction.SurvivorLocationsVisited },
+                    //{ '2', SurvivorAction.SurvivorEdit },
+                    { '2', SurvivorAction.LookAround },
+                    { '3', SurvivorAction.LookAt },
+                    { '4', SurvivorAction.PickUp },
+                    { '5', SurvivorAction.PutDown },
+                    { '6', SurvivorAction.Inventory },                   
+                    { '7', SurvivorAction.Travel},
+                    { '8', SurvivorAction.SurvivorLocationsVisited },
+                    { '9', SurvivorAction.AdminMenu },
                     { '0', SurvivorAction.Exit }
                 }
+        };
+
+        public static Menu AdminMenu = new Menu()
+        {
+            MenuName = "AdminMenu",
+            MenuTitle = "Admin Menu",
+            MenuChoices = new Dictionary<char, SurvivorAction>()
+            {
+                { '1', SurvivorAction.ListLocations },
+                { '2', SurvivorAction.ListGameObjects },
+                { '3', SurvivorAction.ReturnToMainMenu }
+            }
         };
 
         //public static Menu ManageTraveler = new Menu()

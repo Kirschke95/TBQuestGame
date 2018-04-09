@@ -54,7 +54,22 @@ namespace TB_QuestGame
             _gameSurvivor = new Survivor();
             _worldContents = new WorldContents();
             _gameConsoleView = new ConsoleView(_gameSurvivor, _worldContents);
+            SurvivorObject survivorObject;
             _playingGame = true;
+
+            //add event handler for adding.subtracting to/from inventory
+            foreach (GameObject gameObject in _worldContents.GameObjects)
+            {
+                if (gameObject is SurvivorObject)
+                {
+                    survivorObject = gameObject as SurvivorObject;
+                    survivorObject.ObjectAddedToInventory += HandleObjectAddedToInventory;
+                }
+            }
+
+            //add initial items to the survivor's inventory
+            _gameSurvivor.Inventory.Add(_worldContents.GetGameOjbectById(5) as SurvivorObject);
+            _gameSurvivor.Inventory.Add(_worldContents.GetGameOjbectById(6) as SurvivorObject);
 
             Console.CursorVisible = false;
         }
@@ -148,6 +163,39 @@ namespace TB_QuestGame
                         _gameConsoleView.DisplayStatusBox();
                         break;
 
+                    case SurvivorAction.ListGameObjects:
+                        _gameConsoleView.DisplayListOfGameObjects();
+                        _gameConsoleView.DisplayStatusBox();
+                        break;
+
+                    case SurvivorAction.LookAt:
+                        LookAtAction();
+                        break;
+
+                    case SurvivorAction.PickUp:
+                        PickUpAction();
+                        break;
+
+                    case SurvivorAction.PutDown:
+                        PutDownAction();
+                        break;
+
+                    case SurvivorAction.Inventory:
+                        _gameConsoleView.DisplayInventory();
+                        break;
+
+                    case SurvivorAction.AdminMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.AdminMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Admin Menu", "Select an option from the menu",
+                            ActionMenu.AdminMenu, "");
+                        break;
+
+                    case SurvivorAction.ReturnToMainMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.MainMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(_currentLocation),
+                            ActionMenu.MainMenu, "");
+                        break;
+
                     case SurvivorAction.Exit:
                         _playingGame = false;
                         break;
@@ -165,6 +213,54 @@ namespace TB_QuestGame
             Environment.Exit(1);
         }
 
+        private void LookAtAction()
+        {
+            //display list of traveler objects in location id and get player choice
+            int gameObjectToLookAtId = _gameConsoleView.DisplayGetGameObjectToLookAt();
+
+            //display game object info
+            if (gameObjectToLookAtId != 0)
+            {
+                //gets game object from world 
+                GameObject gameObject = _worldContents.GetGameOjbectById(gameObjectToLookAtId);
+
+                //displays that item info
+                _gameConsoleView.DisplayGameObjectInfo(gameObject);
+            }
+        }
+
+        private void PickUpAction()
+        {
+            //display list of objects in current location id and get a choice
+            int survivorObjectToPickUpId = _gameConsoleView.DisplayGetSurvivorObjectToPickUp();
+
+            //add object to inventory
+            if (survivorObjectToPickUpId != 0)
+            {
+                //get game object from world
+                SurvivorObject survivorObject = _worldContents.GetGameOjbectById(survivorObjectToPickUpId) as SurvivorObject;
+
+                //note: object added to list and location id is set to 0 - INVENTORY
+                _gameSurvivor.Inventory.Add(survivorObject);
+                survivorObject.LocationId = 0; // location id 0 means INVENTORY
+
+                //display confirm message
+                _gameConsoleView.DisplayConfirmSurvivorObjectAddedToInventory(survivorObject);
+            }
+        }
+
+        private void PutDownAction()
+        {
+            int inventoryObjectToPutDownId = _gameConsoleView.DisplayGetInventoryObjectToPutDown();
+
+            SurvivorObject survivorObject = _worldContents.GetGameOjbectById(inventoryObjectToPutDownId) as SurvivorObject;
+
+            _gameSurvivor.Inventory.Remove(survivorObject);
+            survivorObject.LocationId = _gameSurvivor.LocationId;
+
+            _gameConsoleView.DisplayConfirmSurvivorObjectRemovedFromInventory(survivorObject);
+        }
+
         private void UpdateGameStatus()
         {
             if (!_gameSurvivor.HasVisisted(_currentLocation.LocationID))
@@ -176,6 +272,13 @@ namespace TB_QuestGame
             if (_currentLocation.RoomWidth > 0)
             {
 
+            }
+
+            if (_gameSurvivor.Health <= 0)
+            {
+                _gameConsoleView.DisplayGamePlayScreen("You gave it your best, but you are now dead.", "", ActionMenu.MainMenu, "");
+                Console.ReadKey();
+                Environment.Exit(0);
             }
         }
 
@@ -196,6 +299,68 @@ namespace TB_QuestGame
 
             _gameSurvivor.Exp = 0;
             _gameSurvivor.Health = 100;
+        }
+
+        private void HandleObjectAddedToInventory(object gameObject, EventArgs e)
+        {
+            if (gameObject.GetType() == typeof(SurvivorObject))
+            {
+                SurvivorObject survivorObject = gameObject as SurvivorObject;
+                switch (survivorObject.Type)
+                {
+                    case SurvivorObjectType.Food:
+                        _gameSurvivor.Health += survivorObject.Value;
+
+                        //REMOVE OBJECT
+                        if (survivorObject.IsConsumable)
+                        {
+                            survivorObject.LocationId = -1; //-1 being used to declare it is gone
+                        }
+                        break;
+                    case SurvivorObjectType.Medicine:
+                        break;
+                    case SurvivorObjectType.Tool:
+                        break;
+                    case SurvivorObjectType.Weapon:
+                        break;
+                    case SurvivorObjectType.Item:
+                        break;
+                    case SurvivorObjectType.Information:
+                        
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void HandleObjectUsed(object gameObject, EventArgs e)
+        {
+            if (gameObject.GetType() == typeof(SurvivorObject))
+            {
+                SurvivorObject survivorObject = gameObject as SurvivorObject;
+                switch (survivorObject.Type)
+                {
+                    case SurvivorObjectType.Food:
+                        break;
+                    case SurvivorObjectType.Medicine:
+                        break;
+                    case SurvivorObjectType.Tool:
+                        break;
+                    case SurvivorObjectType.Weapon:
+                        break;
+                    case SurvivorObjectType.Item:
+                        break;
+                    case SurvivorObjectType.Information:
+                        if (survivorObject.IsUsable)
+                        {
+
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         public static string UppercaseFirst(string s)

@@ -171,6 +171,33 @@ namespace TB_QuestGame
 
             return messageboxText;
         }
+
+        public static string ListAllGameObjects(IEnumerable<GameObject> gameObjects)
+        {
+            //display table name 
+            string messageboxText =
+                "All Game Objects\n" +
+                "\n" +
+
+                //display a table header
+                "ID".PadRight(10) + "Name".PadRight(30) + "LocationId".PadRight(10) + "\n" + 
+                "---".PadRight(10) + "----------------------".PadRight(30) + "----------------------".PadRight(10) + "\n";
+
+            //display all world locations
+            string gameObjectList = null;
+            foreach (GameObject gameObject in gameObjects)
+            {
+                gameObjectList +=
+                    $"{gameObject.Id}".PadRight(10) +
+                    $"{gameObject.Name}".PadRight(30) +
+                    $"{gameObject.LocationId}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageboxText += gameObjectList;
+
+            return messageboxText;
+        }
         public static string SurvivorInfo(Survivor gameSurvivor)
         {
             string messageBoxText =
@@ -195,12 +222,132 @@ namespace TB_QuestGame
         //    }
         //}
 
+        public static string GameObjectsChooseList(IEnumerable<GameObject> gameObjects)
+        {
+            //table name and column headers
+            string messageBoxText = "Game Objects\n" +
+                "\n" +
+
+                //table header
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            //display all travler objects
+            string gameObjectRows = null;
+            foreach (GameObject gameObject in gameObjects)
+            {
+                gameObjectRows +=
+                    $"{gameObject.Id}".PadRight(10) +
+                    $"{gameObject.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += gameObjectRows;
+            return messageBoxText;
+
+        }
+
+        public static string DisplayJournalInformation(IEnumerable<GameObject> gameObjects)
+        {
+            string messageBoxText = "";
+
+            //display table header
+            messageBoxText =
+                $"ID".PadRight(10) +
+                $"Name".PadRight(30) +
+                $"Location".PadRight(10) +
+                "\n" +
+                "---".PadRight(10) +
+                "------------------------------".PadRight(30) +
+                "---------------------".PadRight(10) +
+                "\n";
+
+            string gameObjectRow = null;
+
+            foreach (GameObject gameObject in gameObjects)
+            {
+                gameObjectRow +=
+                    $"{gameObject.Id}".PadRight(10) +
+                    $"{gameObject.Name}".PadRight(30) +
+                    $"{gameObject.LocationId}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += gameObjectRow;
+
+            return messageBoxText;
+        }
+
+        public static string LookAt(GameObject gameObject)
+        {
+            string messageBoxText = "";
+
+            messageBoxText =
+                $"{gameObject.Name}\n" +
+                "\n" +
+                gameObject.Description + "\n" +
+                "\n";
+
+            if (gameObject is SurvivorObject)
+            {
+                SurvivorObject survivorObject = gameObject as SurvivorObject;
+
+                messageBoxText += $"The {survivorObject.Name} has a value of {survivorObject.Value} and ";
+
+                if (survivorObject.CanInventory)
+                {
+                    messageBoxText += "can be picked up.";
+                }
+                else
+                {
+                    messageBoxText += "can not be picked up.";
+                }
+
+            }
+            else
+            {
+                messageBoxText += $"The {gameObject.Name} cannot be picked up";
+            }
+
+            return messageBoxText;
+        }
+
         public static string LookAround(WorldLocations worldLocation)
         {
             string messageBox = $"You are currently in {worldLocation.Name}\n" +
                 $"\n";
             //add room contents later when we get into world objects 
             return messageBox;
+        }
+
+        public static string CurrentInventory(IEnumerable<SurvivorObject> inventory)
+        {
+            string messageBoxText = "";
+
+            //display table header
+            messageBoxText =
+                $"ID".PadRight(10) +
+                $"Name".PadRight(30) +
+                $"Type".PadRight(10) +
+                "\n" +
+                "---".PadRight(10) +
+                "------------------------------".PadRight(30) +
+                "---------------------".PadRight(10) +
+                "\n";
+
+            string inventoryObjectRows = null;
+            foreach (SurvivorObject inventoryObject in inventory)
+            {
+                inventoryObjectRows +=
+                    $"{inventoryObject.Id}".PadRight(10) +
+                    $"{inventoryObject.Name}".PadRight(30) +
+                    $"{inventoryObject.Type}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            return messageBoxText;
         }
 
         public static string Travel(Survivor gameSurvivor, List<WorldLocations> worldLocations)

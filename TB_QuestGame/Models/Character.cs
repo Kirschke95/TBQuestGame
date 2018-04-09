@@ -21,7 +21,6 @@ namespace TB_QuestGame
             Xantorian
         }
 
-
         #endregion
 
         #region FIELDS
@@ -29,8 +28,9 @@ namespace TB_QuestGame
         private string _name;
         private int _age;
         private bool _friendly;
+        private int _locationId;
 
-        
+       
 
         private RaceType _race;
 
@@ -62,6 +62,12 @@ namespace TB_QuestGame
             set { _race = value; }
         }
 
+        public virtual int LocationId
+        {
+            get { return _locationId; }
+            set { _locationId = value; }
+        }
+
         #endregion
 
         #region CONSTRUCTORS
@@ -81,7 +87,7 @@ namespace TB_QuestGame
 
         #region METHODS
 
-        public virtual string Greeting()
+        public virtual string Greeting() //virtual will allow us to use it directly with subclasses, or OVERRIDE the method
         {
             return $"Hello, my name is {_name}.";
         }
