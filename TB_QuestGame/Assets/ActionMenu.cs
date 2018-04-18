@@ -17,6 +17,9 @@ namespace TB_QuestGame
             MissionIntro,
             InitalizeMission,
             MainMenu,
+            ObjectMenu,
+            NpcMenu,
+            SurvivorMenu,
             AdminMenu
         }
 
@@ -48,18 +51,51 @@ namespace TB_QuestGame
             MenuTitle = "Main Menu",
             MenuChoices = new Dictionary<char, SurvivorAction>()
                 {
-                    { '1', SurvivorAction.SurvivorInfo },
-                    //{ '2', SurvivorAction.SurvivorEdit },
-                    { '2', SurvivorAction.LookAround },
-                    { '3', SurvivorAction.LookAt },
-                    { '4', SurvivorAction.PickUp },
-                    { '5', SurvivorAction.PutDown },
-                    { '6', SurvivorAction.Inventory },                   
-                    { '7', SurvivorAction.Travel},
-                    { '8', SurvivorAction.SurvivorLocationsVisited },
-                    { '9', SurvivorAction.AdminMenu },
+                    { '1', SurvivorAction.LookAround },
+                    { '2', SurvivorAction.Travel },
+                    { '3', SurvivorAction.ObjectMenu },
+                    { '4', SurvivorAction.NonplayerCharacterMenu },
+                    { '5', SurvivorAction.SurvivorMenu },
+                    { '6', SurvivorAction.AdminMenu },                   
                     { '0', SurvivorAction.Exit }
                 }
+        };
+
+        public static Menu SurvivorMenu = new Menu()
+        {
+            MenuName = "SurvivorMenu",
+            MenuTitle = "Survivor Menu",
+            MenuChoices = new Dictionary<char, SurvivorAction>()
+            {
+                { '1', SurvivorAction.SurvivorInfo },
+                { '2', SurvivorAction.Inventory },
+                { '3', SurvivorAction.SurvivorLocationsVisited },
+                { '4', SurvivorAction.ReturnToMainMenu }
+            }
+        };
+
+        public static Menu ObjectMenu = new Menu()
+        {
+            MenuName = "ObjectMnu",
+            MenuTitle = "Object Menu",
+            MenuChoices = new Dictionary<char, SurvivorAction>()
+            {
+                { '1', SurvivorAction.LookAt },
+                { '2', SurvivorAction.PickUp },
+                { '3', SurvivorAction.PutDown },
+                { '4', SurvivorAction.ReturnToMainMenu }
+            }
+        };
+
+        public static Menu NpcMenu = new Menu()
+        {
+            MenuName = "NpcMenu",
+            MenuTitle = "Npc Menu",
+            MenuChoices = new Dictionary<char, SurvivorAction>()
+            {
+                { '1', SurvivorAction.TalkTo },
+                { '2', SurvivorAction.ReturnToMainMenu }
+            }
         };
 
         public static Menu AdminMenu = new Menu()
@@ -70,7 +106,8 @@ namespace TB_QuestGame
             {
                 { '1', SurvivorAction.ListLocations },
                 { '2', SurvivorAction.ListGameObjects },
-                { '3', SurvivorAction.ReturnToMainMenu }
+                { '3', SurvivorAction.DisplayNonPlayableCharacters },
+                { '0', SurvivorAction.ReturnToMainMenu }
             }
         };
 

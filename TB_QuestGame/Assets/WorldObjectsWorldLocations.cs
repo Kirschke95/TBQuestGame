@@ -23,7 +23,9 @@ namespace TB_QuestGame
                 "You should probably try to get out of here.",
                 Locked = false,
                 ExperiencePoints = 0,
-                HealthAffect = 0
+                HealthAffect = 0,
+                RequiredExp = -100,
+                
             },
 
             new WorldLocations
@@ -31,8 +33,8 @@ namespace TB_QuestGame
                 Name = "The Court Yard",
                 LocationID = 2,
                 Description = "The court yard is large. The large, open area is dimmly lit by " +
-                "small candles meticulously placed. You can hear movement, but can't quite see" +
-                "what's moving from the entrance to the court yard. It's cold, dark, and dangerous." +
+                "small candles meticulously placed. You can hear movement, but can't quite see " +
+                "what's moving from the entrance to the court yard. It's cold, dark, and dangerous. " +
                 "Proceed with caution.",
                 Locked = false,
                 RoomHeight = 10,
@@ -47,12 +49,13 @@ namespace TB_QuestGame
                 Name = "The Great Room",
                 LocationID = 3,
                 Description = "This is new. This room is completely lit. You can see everything." +
-                "There are bodies everywhere. You can see a few doors on each wall of this giant room" +
-                "but you should be careful moving around. What is going on here? Where are you?" +
+                "There are bodies everywhere. You can see a few doors on each wall of this giant room " +
+                "but you should be careful moving around. What is going on here? Where are you? " +
                 "What happened?",
                 Locked = false,
                 ExperiencePoints = 50,
-                HealthAffect = 0
+                HealthAffect = 0,
+                RequiredExp = -100,
             },
 
             new WorldLocations
@@ -63,7 +66,8 @@ namespace TB_QuestGame
                 "the wall that there is a workbench and a small chest. This seems like an important room",
                 Locked = true,
                 ExperiencePoints = 100,
-                HealthAffect = 100
+                HealthAffect = 100,
+                RequiredExp = -100,
             },
 
             new WorldLocations
@@ -73,8 +77,9 @@ namespace TB_QuestGame
                 Description = "This room looks like a kitchen. It hasn't been used in a long time. You can barely makeout the layout " +
                 "of the room, but it looks like there may be some food in here.",
                 Locked = false,
-                ExperiencePoints = 10,
-                HealthAffect = 0
+                ExperiencePoints = -10,
+                HealthAffect = 0,
+                RequiredExp = -100,
             },
 
             new WorldLocations
@@ -84,8 +89,9 @@ namespace TB_QuestGame
                 Description = "It smells fowl, and you feel dumber for walking in. Nothing to gain here without being able to see, " +
                 "but you have made negative progress. Come back with a way to see, and maybe you'll be rewarded.",
                 Locked = false,
-                ExperiencePoints = -20,
-                HealthAffect = -50
+                ExperiencePoints = 0,
+                HealthAffect = -50,
+                RequiredExp = -100,
             },
 
 
@@ -98,7 +104,7 @@ namespace TB_QuestGame
                 ExperiencePoints = 10,
                 Locked = true,
                 HealthAffect = 0,
-                RequiredExp = 0
+                RequiredExp = -100,
             },
 
             new WorldLocations
@@ -111,6 +117,16 @@ namespace TB_QuestGame
                 HealthAffect = 0,
                 Locked = true,
                 RequiredExp = 100
+            },
+
+            new WorldLocations
+            {
+                Name = "The Exit",
+                LocationID = 9,
+                Description = "You wake up at home. This was all a twisted dream. You're safe now, and you get up to write in your journal" +
+                " about what you saw last night.",
+                Locked = true,
+                RequiredExp = 250
             }
 
 

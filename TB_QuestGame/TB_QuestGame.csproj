@@ -53,9 +53,14 @@
     <Compile Include="ConsoleUtilities\ConsoleWindowHelper.cs" />
     <Compile Include="Controllers\Controller.cs" />
     <Compile Include="Models\Character.cs" />
+    <Compile Include="Models\Enemy.cs" />
     <Compile Include="Models\Enums\SurvivorObjectType.cs" />
+    <Compile Include="Models\Friendly.cs" />
     <Compile Include="Models\GameObject.cs" />
+    <Compile Include="Models\Interfaces\IBattle.cs" />
+    <Compile Include="Models\Interfaces\ISpeak.cs" />
     <Compile Include="Models\Menu.cs" />
+    <Compile Include="Models\Npc.cs" />
     <Compile Include="Models\SellableObject.cs" />
     <Compile Include="Models\Survivor.cs" />
     <Compile Include="Models\SurvivorAction.cs" />

@@ -128,9 +128,15 @@ namespace TB_QuestGame
                 ActionMenu.AdminMenu, "");
         }
 
+        public void DisplayListOfNpcObjects()
+        {
+            DisplayGamePlayScreen("All NPC Objects", Text.ListAllNpcObjects(_worldContents.Npcs),
+                ActionMenu.AdminMenu, "");
+        }
+
         public void DisplayInventory()
         {
-            DisplayGamePlayScreen("Inventory", Text.CurrentInventory(_gameSurvivor.Inventory), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Inventory", Text.CurrentInventory(_gameSurvivor.Inventory), ActionMenu.SurvivorMenu, "");
         }
 
         public int GetNextTravelLocation()
@@ -150,13 +156,31 @@ namespace TB_QuestGame
                 visitedLocations.Add(_worldContents.GetLocationById(locationId));
             }
 
-            DisplayGamePlayScreen("Locations you've been too", Text.VisitedLocations(visitedLocations), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Locations you've been too", Text.VisitedLocations(visitedLocations), ActionMenu.SurvivorMenu, "");
+        }
+
+        public void DisplayFriendlySecretMessage(Friendly friendly)
+        {
+            DisplayGamePlayScreen("Secret message unlocked!", friendly.SecretMessage, ActionMenu.NpcMenu, "");
         }
 
         public void DisplayLookAround()
         {
+            //get current location
             WorldLocations currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
-            DisplayGamePlayScreen("Current Location", Text.LookAround(currentLocation), ActionMenu.MainMenu, "");
+            
+
+            //get list of game objects in current location
+            List<GameObject> gameObjectsInCurrentLocation = _worldContents.GetGameObjectsByLocationId(_gameSurvivor.LocationId);
+
+            //get list of NPCs in current location
+            List<Npc> npcsInCurrentLocation = _worldContents.GetNpcsByLocationId(_gameSurvivor.LocationId);
+
+            string messageBoxText = Text.LookAround(currentLocation) + Environment.NewLine + Environment.NewLine;
+            messageBoxText += Text.GameObjectsChooseList(gameObjectsInCurrentLocation) + Environment.NewLine;
+            messageBoxText += Text.NpcsChooseList(npcsInCurrentLocation);
+
+            DisplayGamePlayScreen("Current Location", messageBoxText, ActionMenu.MainMenu, "");
         }
 
         public int DisplayGetGameObjectToLookAt()
@@ -169,7 +193,7 @@ namespace TB_QuestGame
 
             if (currentLocationObjects.Count > 0)
             {
-                DisplayGamePlayScreen("Look at an item", Text.GameObjectsChooseList(currentLocationObjects), ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen($"Look at an item in {_worldContents.GetLocationById(_gameSurvivor.LocationId).Name}", Text.GameObjectsChooseList(currentLocationObjects), ActionMenu.ObjectMenu, "");
 
                 while (!validGameObject)
                 {
@@ -189,7 +213,7 @@ namespace TB_QuestGame
             }
             else
             {
-                DisplayGamePlayScreen("Look at an item", "This room has no items.", ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Look at an item", "This room has no items.", ActionMenu.ObjectMenu, "");
             }
 
             return gameObjectId;
@@ -205,7 +229,7 @@ namespace TB_QuestGame
 
             if (survivorObjectsInCurrentLocation.Count > 0)
             {
-                DisplayGamePlayScreen("Pick up item", Text.GameObjectsChooseList(survivorObjectsInCurrentLocation), ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Pick up item", Text.GameObjectsChooseList(survivorObjectsInCurrentLocation), ActionMenu.ObjectMenu, "");
 
                 while (!validGameObjectId)
                 {
@@ -234,12 +258,71 @@ namespace TB_QuestGame
             }
             else
             {
-                DisplayGamePlayScreen("Pick up item", "There are no items here.", ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Pick up item", "There are no items here.", ActionMenu.ObjectMenu, "");
             }
 
             return gameObjectId;
         }
 
+        public int DisplayGetNpcToTalkTo()
+        {
+            int npcId = 0;
+            bool validNpcId = false;
+
+            //get list of npcs in current location
+            List<Npc> npcInCurrentLocation = _worldContents.GetNpcsByLocationId(_gameSurvivor.LocationId);
+
+            if (npcInCurrentLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Choose character to speak with", Text.NpcsChooseList(npcInCurrentLocation), ActionMenu.NpcMenu, "");
+
+                while (!validNpcId)
+                {
+                    //get integer from player
+                    GetInteger($"Enter the Id number of the character you want to talk to: ", 0, 0, out npcId);
+
+                    //validate integer as valid NPC id and in current location
+                    if (_worldContents.IsValidNpcByLocationId(npcId, _gameSurvivor.LocationId))
+                    {
+                        Npc npc = _worldContents.GetNpcById(npcId);
+                        if (npc is ISpeak)
+                        {
+                            validNpcId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("It appears this character has nothing to say. Try again.");
+                        }
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("Invalid NPC Id, try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Choose character to speak with", "It appears there are no NPCs here.", ActionMenu.NpcMenu, "");
+            }
+            
+            return npcId;
+        }
+
+        public void DisplayTalkTo(Npc npc)
+        {
+            ISpeak speakingNpc = npc as ISpeak;
+
+            string message = speakingNpc.Speak();
+
+            if (message == "")
+            {
+                message = "This character has nothing to say. Try again.";
+            }
+
+            DisplayGamePlayScreen("Speak to character", message, ActionMenu.NpcMenu, "");
+        }
         public int DisplayGetInventoryObjectToPutDown()
         {
             int survivorObjectId = 0;
@@ -247,7 +330,7 @@ namespace TB_QuestGame
 
             if (_gameSurvivor.Inventory.Count > 0)
             {
-                DisplayGamePlayScreen("Put Down Item", Text.GameObjectsChooseList(_gameSurvivor.Inventory), ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Put Down Item", Text.GameObjectsChooseList(_gameSurvivor.Inventory), ActionMenu.ObjectMenu, "");
 
                 while (!validInventoryObject)
                 {
@@ -272,7 +355,7 @@ namespace TB_QuestGame
             }
             else
             {
-                DisplayGamePlayScreen("Put Down Item", "You have nothing in your inventory.", ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Put Down Item", "You have nothing in your inventory.", ActionMenu.ObjectMenu, "");
             }
 
             return survivorObjectId;
@@ -280,25 +363,25 @@ namespace TB_QuestGame
 
         public void DisplayConfirmSurvivorObjectRemovedFromInventory(SurvivorObject objectToPutDown)
         {
-            DisplayGamePlayScreen("Put Down Item", $"The {objectToPutDown.Name} has been removed.", ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Put Down Item", $"The {objectToPutDown.Name} has been removed.", ActionMenu.ObjectMenu, "");
         }
 
         public void DisplayConfirmSurvivorObjectAddedToInventory(SurvivorObject objectAddedToInventory)
         {
             if (objectAddedToInventory.PickUpMessage != null)
             {
-                DisplayGamePlayScreen("Pick up game item", objectAddedToInventory.PickUpMessage, ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Pick up game item", objectAddedToInventory.PickUpMessage, ActionMenu.ObjectMenu, "");
             }
             else
             {
-                DisplayGamePlayScreen("Pick up game item", $"The {objectAddedToInventory.Name} has been added to your inventory", ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Pick up game item", $"The {objectAddedToInventory.Name} has been added to your inventory", ActionMenu.ObjectMenu, "");
             }
             
         }
 
         public void DisplayGameObjectInfo(GameObject gameObject)
         {
-            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.ObjectMenu, "");
         }
 
         public int GetNextLocation()
@@ -319,19 +402,33 @@ namespace TB_QuestGame
                 //validate integer as valid location id, then by locked or not
                 if (_worldContents.IsValidLocation(locationId))
                 {
-                    if (_worldContents.IsLockedLocation(locationId))
+                    if (_worldContents.IsLockedLocation(locationId) || _worldContents.GetLocationById(locationId).RequiredExp > _gameSurvivor.Exp)
                     {
                         ClearInputBox();
-                        DisplayInputErrorMessage("It seems this room is locked. Pick a new location.");
-                    }
-                    else if (_worldContents.GetLocationById(locationId).RequiredExp > _gameSurvivor.Exp)
-                    {
-                        ClearInputBox();
-                        DisplayInputErrorMessage("You do not have the required experience to travel here.");
-                    }
+                        if (_worldContents.IsLockedLocation(locationId))
+                        {
+                            DisplayInputErrorMessage("This room is locked, you must find the key.");
+                        }
+                        if (_worldContents.GetLocationById(locationId).RequiredExp > _gameSurvivor.Exp)
+                        {
+                            DisplayInputErrorMessage("You don't have enough experience to travel here.");
+                        }
+                        
+                    }                 
                     else
                     {
                         validLocation = true;
+
+                        if (_worldContents.GetLocationById(locationId).ExperiencePoints < 0)
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage($"You have lost {Math.Abs(_worldContents.GetLocationById(locationId).ExperiencePoints)} experience.");
+                        }
+                        if (_worldContents.GetLocationById(locationId).ExperiencePoints > 0)
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage($"You have gained {Math.Abs(_worldContents.GetLocationById(locationId).ExperiencePoints)} experience.");
+                        }
                     }
                     
 

@@ -14,21 +14,28 @@ namespace TB_QuestGame
         None,
         MissionSetup,
         LookAround,
+        Travel,
+
+        SurvivorMenu,
+        SurvivorInfo,
+        Inventory,
+        SurvivorLocationsVisited,
+        SurvivorEdit,
+
+        ObjectMenu,
         LookAt,
         PickUp,
         PutDown,
-        Inventory,
-        Travel,
-        SurvivorLocationsVisited,
-        SurvivorInfo,
-        SurvivorEdit,
-        SurvivorTreasure,
+        
+        NonplayerCharacterMenu,
+        TalkTo,
+
+        AdminMenu,
         ListLocations,
         ListGameObjects,
-        AdminMenu,
+        DisplayNonPlayableCharacters,
+
         ReturnToMainMenu,
-        ListItems,
-        ListTreasures,
         Exit
     }
 }

@@ -16,6 +16,13 @@ namespace TB_QuestGame
         //
         private List<WorldLocations> _worldLocations;
         private List<GameObject> _gameObjects;
+        private List<Npc> _npcs;
+
+        public List<Npc> Npcs
+        {
+            get { return _npcs; }
+            set { _npcs = value; }
+        }
 
         public List<GameObject> GameObjects
         {
@@ -136,6 +143,11 @@ namespace TB_QuestGame
             }
         }
 
+        public void UnlockRoom(int roomToUnlock)
+        {
+            GetLocationById(roomToUnlock).Locked = false;
+        }
+
         public GameObject GetGameOjbectById(int Id)
         {
             GameObject gameObjectToReturn = null;
@@ -183,14 +195,82 @@ namespace TB_QuestGame
             }
         }
 
+        public bool IsValidNpcByLocationId(int npcId, int currentLocationId)
+        {
+            List<int> npcIds = new List<int>();
+
+            //create list of npcs in current location
+            foreach (Npc npc in _npcs)
+            {
+                if (npc.LocationId == currentLocationId)
+                {
+                    npcIds.Add(npc.Id);
+                }
+            }
+
+            //determine if object id is valid id and return result
+            if (npcIds.Contains(npcId))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public Npc GetNpcById(int Id)
+        {
+            Npc npcToReturn = null;
+
+            foreach (Npc npc in _npcs)
+            {
+                if (npc.Id == Id)
+                {
+                    npcToReturn = npc;
+                }
+            }
+
+            //specified id wasnt found do this
+            if (npcToReturn == null)
+            {
+                string feedbackMessage = $"The Npc Id {Id} does not exist.";
+                throw new ArgumentException(feedbackMessage, Id.ToString());
+            }
+
+            return npcToReturn;
+        }
+
+        public List<Npc> GetNpcsByLocationId(int locationId)
+        {
+            List<Npc> npcs = new List<Npc>();
+
+            foreach (Npc npc in _npcs)
+            {
+                if (npc.LocationId == locationId)
+                {
+                    npcs.Add(npc);
+                }
+            }
+
+            return npcs;
+        }
+
         public List<SurvivorObject> GetSurvivorObjectsByLocationId(int locationId)
         {
             List<SurvivorObject> survivorObjects = new List<SurvivorObject>();
 
             //run through game object list and grab all that are in current location id
             foreach (GameObject gameObject in _gameObjects)
+
             {
-                if (gameObject.LocationId == locationId && gameObject is SurvivorObject)
+                if (gameObject.LocationId == locationId && gameObject is SellableObject)
+                {
+                    survivorObjects.Add(gameObject as SurvivorObject);
+                }
+
+                if (gameObject.LocationId == locationId && gameObject is SurvivorObject && gameObject.IsVisible == true)
                 {
                     survivorObjects.Add(gameObject as SurvivorObject);
                 }
@@ -205,7 +285,7 @@ namespace TB_QuestGame
 
             foreach (GameObject gameObject in _gameObjects)
             {
-                if (gameObject.LocationId == locationId)
+                if (gameObject.LocationId == locationId && gameObject.IsVisible == true)
                 {
                     gameObjects.Add(gameObject);
                 }
@@ -239,6 +319,7 @@ namespace TB_QuestGame
         {
             _worldLocations = WorldObjects.WorldLocations;
             _gameObjects = WorldObjects.gameObjects;
+            _npcs = WorldObjects.Npcs;
         }
 
         #endregion

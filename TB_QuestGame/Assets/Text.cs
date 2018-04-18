@@ -198,6 +198,59 @@ namespace TB_QuestGame
 
             return messageboxText;
         }
+
+        public static string ListAllNpcObjects(IEnumerable<Npc> npcObjects)
+        {
+            //table name
+            string messageboxTest = 
+                "NPC Objects\n" +
+                " \n" +
+
+                //table header
+                "ID".PadRight(10) + "Name".PadRight(30) + "Location ID".PadRight(10) + "\n" +
+                 "---".PadRight(10) + "----------------------".PadRight(30) + "----------------------".PadRight(10) + "\n";
+
+            //display npc objects in rows
+            string npcObjectRows = null;
+            foreach (Npc npcObject in npcObjects)
+            {
+                npcObjectRows +=
+                    $"{npcObject.Id}".PadRight(10) +
+                    $"{npcObject.Name}".PadRight(30) +
+                    $"{npcObject.LocationId}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageboxTest += npcObjectRows;
+
+            return messageboxTest;
+        }
+
+        public static string NpcsChooseList(IEnumerable<Npc> npcs)
+        {
+            //table name
+            string messageboxTest =
+                "NPC Objects\n" +
+                " \n" +
+
+                //table header
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                 "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            //display npc objects in rows
+            string npcRows = null;
+            foreach (Npc npc in npcs)
+            {
+                npcRows +=
+                    $"{npc.Id}".PadRight(10) +
+                    $"{npc.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageboxTest += npcRows;
+
+            return messageboxTest;
+        }
         public static string SurvivorInfo(Survivor gameSurvivor)
         {
             string messageBoxText =
@@ -232,7 +285,7 @@ namespace TB_QuestGame
                 "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
                 "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
 
-            //display all travler objects
+            //display all survivor objects
             string gameObjectRows = null;
             foreach (GameObject gameObject in gameObjects)
             {

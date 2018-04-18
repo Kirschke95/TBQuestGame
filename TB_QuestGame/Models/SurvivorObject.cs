@@ -12,7 +12,23 @@ namespace TB_QuestGame
         public override int Id { get; set; }
         public override string Name { get; set; }
         public override string Description { get; set; }
-        public override int LocationId { get; set; }
+
+        private int _location;
+        public override int LocationId
+        {
+            get
+            {
+                return _location;
+            }
+            set
+            {
+                _location = value;
+                if (value == 0)
+                {
+                    OnObjectAddedToInventory();
+                }
+            }
+        }
         public SurvivorObjectType Type { get; set; }
         public string PickUpMessage { get; set; }
         public string PutDownMessage { get; set; }
@@ -20,8 +36,10 @@ namespace TB_QuestGame
         public bool CanInventory { get; set; }
         public bool IsConsumable { get; set; }
         public bool IsUsable { get; set; }
-        public bool IsVisible { get; set; }
+        public override bool IsVisible { get; set; }
         public int Value { get; set; }
+        public int RoomToUnlock { get; set; }
+        public int ItemToReveal { get; set; }
 
         #endregion
 

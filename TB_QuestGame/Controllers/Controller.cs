@@ -54,16 +54,28 @@ namespace TB_QuestGame
             _gameSurvivor = new Survivor();
             _worldContents = new WorldContents();
             _gameConsoleView = new ConsoleView(_gameSurvivor, _worldContents);
+            _gameConsoleView.DisplayStatusBox();
             SurvivorObject survivorObject;
+            Friendly friendly;
             _playingGame = true;
 
-            //add event handler for adding.subtracting to/from inventory
+            //add event handler for adding/subtracting to/from inventory
             foreach (GameObject gameObject in _worldContents.GameObjects)
             {
                 if (gameObject is SurvivorObject)
                 {
                     survivorObject = gameObject as SurvivorObject;
                     survivorObject.ObjectAddedToInventory += HandleObjectAddedToInventory;
+                }
+            }
+
+            //event handler for speaking with and unlocking room
+            foreach (Npc npc in _worldContents.Npcs)
+            {
+                if (npc is Friendly)
+                {
+                    friendly = npc as Friendly;
+                    friendly.FriendlyTalkedTo += HandleNpcTalkedTo;
                 }
             }
 
@@ -79,7 +91,7 @@ namespace TB_QuestGame
         /// </summary>
         private void ManageGameLoop()
         {
-            SurvivorAction travelerActionChoice = SurvivorAction.None;
+            SurvivorAction survivorActionChoice = SurvivorAction.None;
 
             //
             // display splash screen
@@ -110,49 +122,43 @@ namespace TB_QuestGame
             //
             _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrrentLocationInfo(), ActionMenu.MainMenu, "");
             _currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
-            _gameConsoleView.DisplayStatusBox();
+            
 
             //
             // game loop
             //
             while (_playingGame)
             {
+                
                 UpdateGameStatus();
-                travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+               // _gameConsoleView.DisplayStatusBox();
 
-                //
-                // choose an action based on the user's menu choice
-                //
-                switch (travelerActionChoice)
+                //get next action choice
+                survivorActionChoice = GetNextSurvivorAction();
+                                
+                // choose an action based on the user's menu choice                
+                switch (survivorActionChoice)
                 {
                     case SurvivorAction.None:
                         break;
 
                     case SurvivorAction.SurvivorInfo:
                         _gameConsoleView.DisplaySurvivorInfo();
-                        _gameConsoleView.DisplayStatusBox();
-                        break;
-
-                    case SurvivorAction.SurvivorEdit:
-
                         break;
 
                     case SurvivorAction.ListLocations:
                         _gameConsoleView.DisplayListOfLocations();
-                        _gameConsoleView.DisplayStatusBox();
                         break;
 
                     case SurvivorAction.LookAround:
                         _gameConsoleView.DisplayLookAround();
-                        _gameConsoleView.DisplayStatusBox();
                         break;
 
                     case SurvivorAction.Travel:
                         //get new location choice and update current location
-
                         _gameSurvivor.LocationId = _gameConsoleView.GetNextLocation();
                         _currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
-                        _gameConsoleView.DisplayStatusBox();
+
                         //set gameplayscreen as current location info
                         _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(_currentLocation),
                             ActionMenu.MainMenu, "");
@@ -160,12 +166,16 @@ namespace TB_QuestGame
 
                     case SurvivorAction.SurvivorLocationsVisited:
                         _gameConsoleView.DisplayLocationsVisisted();
-                        _gameConsoleView.DisplayStatusBox();
+                        //_gameConsoleView.DisplayStatusBox();
                         break;
 
                     case SurvivorAction.ListGameObjects:
                         _gameConsoleView.DisplayListOfGameObjects();
-                        _gameConsoleView.DisplayStatusBox();
+                       // _gameConsoleView.DisplayStatusBox();
+                        break;
+
+                    case SurvivorAction.DisplayNonPlayableCharacters:
+                        _gameConsoleView.DisplayListOfNpcObjects();
                         break;
 
                     case SurvivorAction.LookAt:
@@ -178,6 +188,10 @@ namespace TB_QuestGame
 
                     case SurvivorAction.PutDown:
                         PutDownAction();
+                        break;
+
+                    case SurvivorAction.TalkTo:
+                        TalkToAction();
                         break;
 
                     case SurvivorAction.Inventory:
@@ -196,6 +210,24 @@ namespace TB_QuestGame
                             ActionMenu.MainMenu, "");
                         break;
 
+                    case SurvivorAction.ObjectMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.ObjectMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Object Menu", "Select an action from the menu.",
+                            ActionMenu.ObjectMenu, "");
+                        break;
+
+                    case SurvivorAction.SurvivorMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.SurvivorMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Survivor Menu", "Select an option from the menu.",
+                            ActionMenu.SurvivorMenu, "");
+                        break;
+
+                    case SurvivorAction.NonplayerCharacterMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.NpcMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("NPC Menu", "Select an option from the menu.",
+                            ActionMenu.NpcMenu, "");
+                        break;
+
                     case SurvivorAction.Exit:
                         _playingGame = false;
                         break;
@@ -211,6 +243,35 @@ namespace TB_QuestGame
             // close the application
             //
             Environment.Exit(1);
+        }
+
+        private SurvivorAction GetNextSurvivorAction()
+        {
+            SurvivorAction survivorActionChoice = SurvivorAction.None;
+
+            switch (ActionMenu.currentMenu)
+            {
+                case ActionMenu.CurrentMenu.MainMenu:
+                    survivorActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+                    break;
+                case ActionMenu.CurrentMenu.ObjectMenu:
+                    survivorActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.ObjectMenu);
+                    break;
+                case ActionMenu.CurrentMenu.NpcMenu:
+                    survivorActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.NpcMenu);
+                    break;
+                case ActionMenu.CurrentMenu.SurvivorMenu:
+                    survivorActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.SurvivorMenu);
+                    break;
+                case ActionMenu.CurrentMenu.AdminMenu:
+                    survivorActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.AdminMenu);
+                    break;
+                default:
+                    break;
+
+            }
+
+            return survivorActionChoice;
         }
 
         private void LookAtAction()
@@ -261,12 +322,30 @@ namespace TB_QuestGame
             _gameConsoleView.DisplayConfirmSurvivorObjectRemovedFromInventory(survivorObject);
         }
 
+        private void TalkToAction()
+        {
+            //display list of NPCs in location and get a player choice
+            int npcToTalkToId = _gameConsoleView.DisplayGetNpcToTalkTo();          
+
+            //display npc messages
+            if (npcToTalkToId != 0)
+            {
+                //get NPC from universe
+                Npc npc = _worldContents.GetNpcById(npcToTalkToId);
+                npc.TalkedTo = true;
+
+                //display info for object chosen
+                _gameConsoleView.DisplayTalkTo(npc);
+            }
+        }
+
         private void UpdateGameStatus()
         {
             if (!_gameSurvivor.HasVisisted(_currentLocation.LocationID))
             {
                 _gameSurvivor.LocationsVisited.Add(_currentLocation.LocationID);
                 _gameSurvivor.Exp += _currentLocation.ExperiencePoints;
+                _gameSurvivor.Health += _currentLocation.HealthAffect;
             }
 
             if (_currentLocation.RoomWidth > 0)
@@ -280,6 +359,8 @@ namespace TB_QuestGame
                 Console.ReadKey();
                 Environment.Exit(0);
             }
+
+            _gameConsoleView.DisplayStatusBox();
         }
 
         /// <summary>
@@ -306,9 +387,13 @@ namespace TB_QuestGame
             if (gameObject.GetType() == typeof(SurvivorObject))
             {
                 SurvivorObject survivorObject = gameObject as SurvivorObject;
+
+                _gameSurvivor.Exp += 5;
+
                 switch (survivorObject.Type)
                 {
                     case SurvivorObjectType.Food:
+
                         _gameSurvivor.Health += survivorObject.Value;
 
                         //REMOVE OBJECT
@@ -325,12 +410,33 @@ namespace TB_QuestGame
                         break;
                     case SurvivorObjectType.Item:
                         break;
-                    case SurvivorObjectType.Information:
-                        
+                    case SurvivorObjectType.Information:                        
+                        break;
+                    case SurvivorObjectType.Key:
+                        _worldContents.UnlockRoom(survivorObject.RoomToUnlock);
                         break;
                     default:
                         break;
                 }
+            }
+        }
+
+        private void HandleNpcTalkedTo(object npc, EventArgs e)
+        {
+            if (npc.GetType() == typeof(Friendly))
+            {
+                Friendly friendly = npc as Friendly;
+
+                _worldContents.GetGameOjbectById(friendly.ItemNeededForSecret).IsVisible = true;
+                
+                if (_gameSurvivor.Inventory.Contains(_worldContents.GetGameOjbectById(friendly.ItemNeededForSecret)))
+                {
+                    _worldContents.UnlockRoom(friendly.RoomToUnlock);
+                    friendly.Messages.Clear();
+                    friendly.Messages.Add(friendly.SecretMessage);
+                    //_gameConsoleView.DisplayFriendlySecretMessage(friendly);
+                }
+                
             }
         }
 

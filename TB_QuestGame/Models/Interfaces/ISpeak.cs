@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace TB_QuestGame
 {
-    public enum SurvivorObjectType
+    public interface ISpeak
     {
-        Food,
-        Medicine,
-        Tool,
-        Weapon,
-        Item,
-        Information,
-        Key
+        List<string> Messages { get; set; }
+        string Speak();
     }
 }
