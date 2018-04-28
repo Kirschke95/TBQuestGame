@@ -122,20 +122,20 @@ namespace TB_QuestGame
             //
             _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrrentLocationInfo(), ActionMenu.MainMenu, "");
             _currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
-            
+
 
             //
             // game loop
             //
             while (_playingGame)
             {
-                
+
                 UpdateGameStatus();
-               // _gameConsoleView.DisplayStatusBox();
+                // _gameConsoleView.DisplayStatusBox();
 
                 //get next action choice
                 survivorActionChoice = GetNextSurvivorAction();
-                                
+
                 // choose an action based on the user's menu choice                
                 switch (survivorActionChoice)
                 {
@@ -171,7 +171,7 @@ namespace TB_QuestGame
 
                     case SurvivorAction.ListGameObjects:
                         _gameConsoleView.DisplayListOfGameObjects();
-                       // _gameConsoleView.DisplayStatusBox();
+                        // _gameConsoleView.DisplayStatusBox();
                         break;
 
                     case SurvivorAction.DisplayNonPlayableCharacters:
@@ -312,20 +312,28 @@ namespace TB_QuestGame
 
         private void PutDownAction()
         {
-            int inventoryObjectToPutDownId = _gameConsoleView.DisplayGetInventoryObjectToPutDown();
+            if (_gameSurvivor.Inventory != null)
+            {
+                int inventoryObjectToPutDownId = _gameConsoleView.DisplayGetInventoryObjectToPutDown();
 
-            SurvivorObject survivorObject = _worldContents.GetGameOjbectById(inventoryObjectToPutDownId) as SurvivorObject;
+                SurvivorObject survivorObject = _worldContents.GetGameOjbectById(inventoryObjectToPutDownId) as SurvivorObject;
 
-            _gameSurvivor.Inventory.Remove(survivorObject);
-            survivorObject.LocationId = _gameSurvivor.LocationId;
+                _gameSurvivor.Inventory.Remove(survivorObject);
+                survivorObject.LocationId = _gameSurvivor.LocationId;
 
-            _gameConsoleView.DisplayConfirmSurvivorObjectRemovedFromInventory(survivorObject);
+                _gameConsoleView.DisplayConfirmSurvivorObjectRemovedFromInventory(survivorObject);
+            }
+            else
+            {
+                _gameConsoleView.DisplayGamePlayScreen("Put Down Item", "You have nothing in your inventory to get rid of.", ActionMenu.ObjectMenu, "");
+            }
+
         }
 
         private void TalkToAction()
         {
             //display list of NPCs in location and get a player choice
-            int npcToTalkToId = _gameConsoleView.DisplayGetNpcToTalkTo();          
+            int npcToTalkToId = _gameConsoleView.DisplayGetNpcToTalkTo();
 
             //display npc messages
             if (npcToTalkToId != 0)
@@ -348,17 +356,19 @@ namespace TB_QuestGame
                 _gameSurvivor.Health += _currentLocation.HealthAffect;
             }
 
-            if (_currentLocation.RoomWidth > 0)
-            {
-
-            }
-
             if (_gameSurvivor.Health <= 0)
             {
                 _gameConsoleView.DisplayGamePlayScreen("You gave it your best, but you are now dead.", "", ActionMenu.MainMenu, "");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
+
+            //this was going to be my game winning screen, but I didn't get to it! SORRY :( TODO 
+
+            //if (_gameSurvivor.LocationId == 8 && _gameSurvivor.Inventory.Contains(_worldContents.GetGameOjbectById(10)) && _gameSurvivor.Inventory.Contains(_worldContents.GetGameOjbectById(6)))
+            //{
+            //    _gameConsoleView.DisplayGameWonScreen();
+            //}
 
             _gameConsoleView.DisplayStatusBox();
         }
@@ -403,17 +413,18 @@ namespace TB_QuestGame
                         }
                         break;
                     case SurvivorObjectType.Medicine:
-                        break;
-                    case SurvivorObjectType.Tool:
-                        break;
+                        break;                    
                     case SurvivorObjectType.Weapon:
                         break;
                     case SurvivorObjectType.Item:
                         break;
-                    case SurvivorObjectType.Information:                        
+                    case SurvivorObjectType.Information:
                         break;
                     case SurvivorObjectType.Key:
                         _worldContents.UnlockRoom(survivorObject.RoomToUnlock);
+                        break;
+                    case SurvivorObjectType.Tool:
+                        _worldContents.RevealItem(survivorObject.ItemToReveal);
                         break;
                     default:
                         break;
@@ -427,16 +438,17 @@ namespace TB_QuestGame
             {
                 Friendly friendly = npc as Friendly;
 
-                _worldContents.GetGameOjbectById(friendly.ItemNeededForSecret).IsVisible = true;
-                
-                if (_gameSurvivor.Inventory.Contains(_worldContents.GetGameOjbectById(friendly.ItemNeededForSecret)))
+                if (friendly.ItemNeededForSecret != 0)
                 {
-                    _worldContents.UnlockRoom(friendly.RoomToUnlock);
-                    friendly.Messages.Clear();
-                    friendly.Messages.Add(friendly.SecretMessage);
-                    //_gameConsoleView.DisplayFriendlySecretMessage(friendly);
+                    _worldContents.GetGameOjbectById(friendly.ItemNeededForSecret).IsVisible = true;
+
+                    if (_gameSurvivor.Inventory.Contains(_worldContents.GetGameOjbectById(friendly.ItemNeededForSecret)))
+                    {
+                        _worldContents.UnlockRoom(friendly.RoomToUnlock);
+                        friendly.Messages.Clear();
+                        friendly.Messages.Add(friendly.SecretMessage);
+                    }
                 }
-                
             }
         }
 
@@ -479,28 +491,7 @@ namespace TB_QuestGame
             return s.First().ToString().ToUpper() + s.Substring(1);
         }
 
-        public static bool GetYesOrNo()
-        {
-            string userResponse = Console.ReadLine().ToLower();
-            bool userChoice = false;
 
-            if (userResponse == "yes")
-            {
-                userChoice = true;
-
-            }
-            else if (userResponse == "no")
-            {
-                userChoice = false;
-
-            }
-            else
-            {
-                userChoice = false;
-            }
-
-            return userChoice;
-        }
 
         #endregion
     }

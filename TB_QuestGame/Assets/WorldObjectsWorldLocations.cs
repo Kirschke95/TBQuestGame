@@ -17,9 +17,9 @@ namespace TB_QuestGame
             {
                 Name = "The Starting Room",
                 LocationID = 1,
-                Description = "Okay, so you remember some of who you are. You have woken up in this" +
-                "small room that seems to have a chest in it. There's a journal chained to the wall." +
-                "It's very dark and you can barely see what's around you. You need to find out what's going on and where you are." +
+                Description = "Okay, so you remember some of who you are. You have woken up in this " +
+                "small room that seems to have a chest in it. There's a journal chained to the wall. " +
+                "It's very dark and you can barely see what's around you. You need to find out what's going on and where you are. " +
                 "You should probably try to get out of here.",
                 Locked = false,
                 ExperiencePoints = 0,
@@ -48,7 +48,7 @@ namespace TB_QuestGame
             {
                 Name = "The Great Room",
                 LocationID = 3,
-                Description = "This is new. This room is completely lit. You can see everything." +
+                Description = "This is new. This room is completely lit. You can see everything. " +
                 "There are bodies everywhere. You can see a few doors on each wall of this giant room " +
                 "but you should be careful moving around. What is going on here? Where are you? " +
                 "What happened?",
@@ -99,8 +99,8 @@ namespace TB_QuestGame
             {
                 Name = "The Bedroom",
                 LocationID = 7,
-                Description = "This room is pretty small. You don't see much, but there is a bed and a dresser" +
-                "pushed against the far wall. You should look around and see what you find.",
+                Description = "This room is pretty small. You don't see much, but there is a bed and a dresser " +
+                "pushed against the far wall. You should look around and see what you find. ",
                 ExperiencePoints = 10,
                 Locked = true,
                 HealthAffect = 0,
@@ -111,8 +111,10 @@ namespace TB_QuestGame
             {
                 Name = "The Attic",
                 LocationID = 8,
-                Description = "It's very dark in here. You can hear something moving along the far side, and" +
-                "you can see a small glow in the furthest corner.",
+                Description = "This is the highest point in the building. You have a cell phone, " +
+                "you think you may be able to make a call. ",
+                SecretMessage = "You put the cell phone battery into your pocket and see if you have signal. It looks like you have " +
+                "a couple bars and you make an emergency call.",
                 ExperiencePoints = 75,
                 HealthAffect = 0,
                 Locked = true,
@@ -123,7 +125,7 @@ namespace TB_QuestGame
             {
                 Name = "The Exit",
                 LocationID = 9,
-                Description = "You wake up at home. This was all a twisted dream. You're safe now, and you get up to write in your journal" +
+                Description = "You wake up at home. This was all a twisted dream. You're safe now, and you get up to write in your journal " +
                 " about what you saw last night.",
                 Locked = true,
                 RequiredExp = 250

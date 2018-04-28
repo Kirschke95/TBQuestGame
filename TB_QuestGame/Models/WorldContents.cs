@@ -146,6 +146,12 @@ namespace TB_QuestGame
         public void UnlockRoom(int roomToUnlock)
         {
             GetLocationById(roomToUnlock).Locked = false;
+            
+        }
+
+        public void RevealItem(int itemToReveal)
+        {
+            GetGameOjbectById(itemToReveal).IsVisible = true;
         }
 
         public GameObject GetGameOjbectById(int Id)

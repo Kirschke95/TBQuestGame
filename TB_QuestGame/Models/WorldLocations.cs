@@ -19,6 +19,7 @@ namespace TB_QuestGame
         private int _healthAffect;
         private int _roomHeight;
         private int _roomWidth;
+        private string _secretMessage;       
 
         #endregion
 
@@ -76,6 +77,12 @@ namespace TB_QuestGame
         {
             get { return _roomWidth; }
             set { _roomWidth = value; }
+        }
+
+        public string SecretMessage
+        {
+            get { return _secretMessage; }
+            set { _secretMessage = value; }
         }
 
         #endregion

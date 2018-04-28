@@ -17,7 +17,7 @@ namespace TB_QuestGame
         {
             TravelerInitialization,
             PlayingGame
-            
+
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace TB_QuestGame
         {
             //get current location
             WorldLocations currentLocation = _worldContents.GetLocationById(_gameSurvivor.LocationId);
-            
+
 
             //get list of game objects in current location
             List<GameObject> gameObjectsInCurrentLocation = _worldContents.GetGameObjectsByLocationId(_gameSurvivor.LocationId);
@@ -306,7 +306,7 @@ namespace TB_QuestGame
             {
                 DisplayGamePlayScreen("Choose character to speak with", "It appears there are no NPCs here.", ActionMenu.NpcMenu, "");
             }
-            
+
             return npcId;
         }
 
@@ -376,7 +376,7 @@ namespace TB_QuestGame
             {
                 DisplayGamePlayScreen("Pick up game item", $"The {objectAddedToInventory.Name} has been added to your inventory", ActionMenu.ObjectMenu, "");
             }
-            
+
         }
 
         public void DisplayGameObjectInfo(GameObject gameObject)
@@ -413,8 +413,8 @@ namespace TB_QuestGame
                         {
                             DisplayInputErrorMessage("You don't have enough experience to travel here.");
                         }
-                        
-                    }                 
+
+                    }
                     else
                     {
                         validLocation = true;
@@ -430,7 +430,7 @@ namespace TB_QuestGame
                             DisplayInputErrorMessage($"You have gained {Math.Abs(_worldContents.GetLocationById(locationId).ExperiencePoints)} experience.");
                         }
                     }
-                    
+
 
                 }
                 else
@@ -456,35 +456,54 @@ namespace TB_QuestGame
                 ConsoleLayout.StatusBoxPositionLeft,
                 ConsoleLayout.StatusBoxWidth,
                 ConsoleLayout.StatusBoxHeight);
-                               
-                //
-                // display status box header with title
-                //
-                Console.BackgroundColor = ConsoleTheme.StatusBoxBorderColor;
-                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
-                Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 2, ConsoleLayout.StatusBoxPositionTop + 1);
-                Console.Write(ConsoleWindowHelper.Center("Game Stats", ConsoleLayout.StatusBoxWidth - 4));
-                Console.BackgroundColor = ConsoleTheme.StatusBoxBackgroundColor;
-                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
 
-                //
-                // display stats
-                //
-                int startingRow = ConsoleLayout.StatusBoxPositionTop + 3;
-                int row = startingRow;
-                foreach (string statusTextLine in Text.StatusBox(_gameSurvivor, _worldContents))
-                {
-                    Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 3, row);
-                    Console.Write(statusTextLine);
-                    row++;
-                }
-            
-            
+            //
+            // display status box header with title
+            //
+            Console.BackgroundColor = ConsoleTheme.StatusBoxBorderColor;
+            Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+            Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 2, ConsoleLayout.StatusBoxPositionTop + 1);
+            Console.Write(ConsoleWindowHelper.Center("Game Stats", ConsoleLayout.StatusBoxWidth - 4));
+            Console.BackgroundColor = ConsoleTheme.StatusBoxBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+
+            //
+            // display stats
+            //
+            int startingRow = ConsoleLayout.StatusBoxPositionTop + 3;
+            int row = startingRow;
+            foreach (string statusTextLine in Text.StatusBox(_gameSurvivor, _worldContents))
+            {
+                Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 3, row);
+                Console.Write(statusTextLine);
+                row++;
+            }
+
+
         }
 
-        public string GetString()
+        public string GetString(string prompt)
         {
-            return Console.ReadLine();
+            bool validResponse = false;
+            string userResponse = Console.ReadLine();
+
+
+            while (!validResponse)
+            {
+                if (userResponse == "")
+                {
+                    ClearInputBox();
+                    DisplayInputErrorMessage("You must type a valid string.");
+                    DisplayInputBoxPrompt(prompt);
+                    userResponse = Console.ReadLine();
+                }
+                else
+                {
+                    validResponse = true;
+                }
+            }
+
+            return userResponse;
         }
 
         /// <summary>
@@ -522,7 +541,7 @@ namespace TB_QuestGame
                         validResponse = true;
                     }
                 }
-                    
+
                 else
                 {
                     ClearInputBox();
@@ -538,13 +557,28 @@ namespace TB_QuestGame
         /// get a character race value from the user
         /// </summary>
         /// <returns>character race value</returns>
-        public Survivor.StarterAttribute GetStarterAttribute()
+        public Survivor.StarterAttribute GetStarterAttribute(string prompt)
         {
-            Survivor.StarterAttribute attibuteChoice;
-            Enum.TryParse<Survivor.StarterAttribute>(Controller.UppercaseFirst(Console.ReadLine()), out attibuteChoice);
+            Survivor.StarterAttribute attributeChoice;
+            bool validAttribute = false;
 
-            return attibuteChoice;
+            do
+            {
+                DisplayInputBoxPrompt(prompt);
+
+            } while (!Enum.TryParse<Survivor.StarterAttribute>(Controller.UppercaseFirst(Console.ReadLine()), out attributeChoice));
+
+            return attributeChoice;
+
         }
+
+        /// <summary>
+        /// display a screen if the user wins the game - has cellphone battery and reaches attic
+        /// </summary>
+        //public void DisplayWonGameScreen()
+        //{
+        //    DisplayGamePlayScreen("You put the battery into the phone to see if you have service. It looks like you do.")
+        //}
 
         /// <summary>
         /// display splash screen
@@ -560,17 +594,8 @@ namespace TB_QuestGame
             Console.Clear();
             Console.CursorVisible = false;
 
-
             Console.SetCursorPosition(0, 10);
-            string tabSpace = new String(' ', 35);
-            //Console.WriteLine(tabSpace + @" _____ _              ___  _               ______          _           _   ");
-            //Console.WriteLine(tabSpace + @"|_   _| |            / _ \(_)              | ___ \        (_)         | |  ");
-            //Console.WriteLine(tabSpace + @"  | | | |__   ___   / /_\ \_  ___  _ __    | |_/ _ __ ___  _  ___  ___| |_ ");
-            //Console.WriteLine(tabSpace + @"  | | | '_ \ / _ \  |  _  | |/ _ \| '_ \   |  __| '__/ _ \| |/ _ \/ __| __|");
-            //Console.WriteLine(tabSpace + @"  | | | | | |  __/  | | | | | (_) | | | |  | |  | | | (_) | |  __| (__| |_ ");
-            //Console.WriteLine(tabSpace + @"  \_/ |_| |_|\___|  \_| |_|_|\___/|_| |_|  \_|  |_|  \___/| |\___|\___|\__|");
-            //Console.WriteLine(tabSpace + @"                                                         _/ |              ");
-            //Console.WriteLine(tabSpace + @"                                                        |__/             ");
+            string tabSpace = new String(' ', 35);                                                              
 
             Console.WriteLine(tabSpace + @"___________.__               _________                  .__              .__");
             Console.WriteLine(tabSpace + @"\__    ___/|  |__   ____    /   _____/__ ____________  _|__|__  _______  |  | ");
@@ -775,8 +800,9 @@ namespace TB_QuestGame
             // get survivor's name
             //
             DisplayGamePlayScreen("Journal Entry - Name", Text.InitializeGetSurvivorName(), ActionMenu.MissionIntro, "");
-            DisplayInputBoxPrompt("Write your name: ");
-            survivor.Name = Controller.UppercaseFirst(GetString());
+            DisplayInputBoxPrompt("Write your name down: ");
+            survivor.Name = Controller.UppercaseFirst(GetString("Write your name down: "));
+            
 
             //
             // get survivor's age
@@ -792,21 +818,21 @@ namespace TB_QuestGame
             //
             DisplayGamePlayScreen("Journal Entry - Starting Attribute", Text.InitializeJournalGetSurvivorAttribute(survivor), ActionMenu.MissionIntro, "");
             DisplayInputBoxPrompt($"Choose your starting attribute {survivor.Name}: ");
-            survivor.StartingAttribute = GetStarterAttribute();
+            survivor.StartingAttribute = GetStarterAttribute($"Choose your starting attribute {survivor.Name}: ");
 
             //
             // get survivor's birth state
             //
             DisplayGamePlayScreen("Journal Entry - Birth State", Text.InitializeJournalGetSurvivorBirthState(survivor), ActionMenu.MissionIntro, "");
             DisplayInputBoxPrompt($"Write down your birth state: ");
-            survivor.BirthState = Controller.UppercaseFirst(GetString());
+            survivor.BirthState = Controller.UppercaseFirst(GetString("Write down your birth state: "));
 
             //
             // get survivor's potential to kill
             //
             DisplayGamePlayScreen("Journal Entry - Potential to Kill", Text.InitializeJournalGetSurvivorCanKill(survivor), ActionMenu.MissionIntro, "");
-            DisplayInputBoxPrompt($"Can you kill to survive?");
-            survivor.CanKill = Controller.GetYesOrNo();
+            DisplayInputBoxPrompt($"Can you kill to survive? ");
+            survivor.CanKill = GetYesOrNo("Can you kill to survive? ");
 
             //
             // echo the survivor's info
@@ -818,6 +844,40 @@ namespace TB_QuestGame
             return survivor;
         }
 
+        public bool GetYesOrNo(string prompt)
+        {
+
+            string userResponse = Console.ReadLine().ToLower();
+            bool userChoice = false;
+            bool validResponse = false;
+
+            while (!validResponse)
+            {
+                if (userResponse == "yes")
+                {
+                    userChoice = true;
+                    validResponse = true;
+
+                }
+                else if (userResponse == "no")
+                {
+                    userChoice = false;
+                    validResponse = true;
+                }
+                else
+                {
+                    ClearInputBox();
+                    DisplayInputErrorMessage("You must enter yes or no.");
+                    DisplayInputBoxPrompt(prompt);
+                    userResponse = Console.ReadLine();
+                }
+            }
+
+            return userChoice;
+
+        }
+
+
         #region ----- display responses to menu action choices -----
 
         public void DisplaySurvivorInfo()
@@ -826,7 +886,7 @@ namespace TB_QuestGame
 
         }
 
-        
+
 
         //public void DisplayUpdateSurvivorInfo()
         //{

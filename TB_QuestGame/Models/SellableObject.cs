@@ -14,5 +14,7 @@ namespace TB_QuestGame
         public override int LocationId { get; set; }
         public int Value { get; set; }
         public bool CanInventory { get; set; }
+
+        public override bool IsVisible { get; set; }
     }
 }

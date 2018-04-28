@@ -26,7 +26,7 @@ namespace TB_QuestGame
             {
                 Id = 2,
                 Name = "Shovel",
-                LocationId = 2,
+                LocationId = 3,
                 Description = "An old rusty shovel. This might be useful to have.",
                 Type = SurvivorObjectType.Tool,
                 PickUpMessage = "You put the shovel in your bag.",
@@ -126,7 +126,7 @@ namespace TB_QuestGame
                 Id = 9,
                 Name = "Shiny round ball",
                 Description = "A small shiny ball. Maybe there's somebody here that wants this item.",
-                LocationId = 2,
+                LocationId = 6,
                 Type = SurvivorObjectType.Item,
                 CanInventory = true,
                 IsConsumable = false,
@@ -151,12 +151,14 @@ namespace TB_QuestGame
                 Id = 11,
                 Name = "Attic Key",
                 Description = "A key that should open the attic.",
-                LocationId = 3,
+                LocationId = 2,
+                Type = SurvivorObjectType.Key,
                 CanInventory = true,
                 IsConsumable = false,
                 IsVisible = false,
                 RoomToUnlock = 8
             }
+
 
 
 
