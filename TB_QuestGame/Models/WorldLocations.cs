@@ -17,8 +17,6 @@ namespace TB_QuestGame
         private int _experiencePoints;
         private int _requiredExp;
         private int _healthAffect;
-        private int _roomHeight;
-        private int _roomWidth;
         private string _secretMessage;       
 
         #endregion
@@ -65,18 +63,6 @@ namespace TB_QuestGame
         {
             get { return _healthAffect; }
             set { _healthAffect = value; }
-        }
-
-        public int RoomHeight
-        {
-            get { return _roomHeight; }
-            set { _roomHeight = value; }
-        }
-
-        public int RoomWidth
-        {
-            get { return _roomWidth; }
-            set { _roomWidth = value; }
         }
 
         public string SecretMessage

@@ -77,8 +77,7 @@ namespace TB_QuestGame
                 $"Good job {gameSurvivor.Name}, I'm surprised you remember. Now we'll get your age.\n" +
                 " \n" +
                 "Enter your age below.\n" +
-                " \n" +
-                "Please use the standard Earth year as your reference.";
+                " \n";
 
             return messageBoxText;
         }

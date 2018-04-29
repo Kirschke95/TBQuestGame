@@ -37,8 +37,6 @@ namespace TB_QuestGame
                 "what's moving from the entrance to the court yard. It's cold, dark, and dangerous. " +
                 "Proceed with caution.",
                 Locked = false,
-                RoomHeight = 10,
-                RoomWidth = 5,
                 RequiredExp = 50,
                 ExperiencePoints = 10,
                 HealthAffect = 0

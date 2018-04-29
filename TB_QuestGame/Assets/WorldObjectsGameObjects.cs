@@ -26,7 +26,7 @@ namespace TB_QuestGame
             {
                 Id = 2,
                 Name = "Shovel",
-                LocationId = 3,
+                LocationId = 7,
                 Description = "An old rusty shovel. This might be useful to have.",
                 Type = SurvivorObjectType.Tool,
                 PickUpMessage = "You put the shovel in your bag.",
@@ -205,7 +205,7 @@ namespace TB_QuestGame
                 Messages = new List<string>
                 {
                     "Hi! I'm sammy! I'm sorry you're here with us.",
-                    "If you need to get into the safe room, you'll have to dig somewhere great.",
+                    "If you need to get into the attic, you'll have to dig somewhere.",
                     "Hey, if you manage to get out of here, don't forget me please."
                 },
                 RoomToUnlock = 0,
